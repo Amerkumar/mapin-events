@@ -1,0 +1,130 @@
+{
+  "project_info": {
+    "project_number": "664628557717",
+    "firebase_url": "https://mapin-220013.firebaseio.com",
+    "project_id": "mapin-220013",
+    "storage_bucket": "mapin-220013.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:664628557717:android:ac6dd1868652029bd1a89c",
+        "android_client_info": {
+          "package_name": "app.com.mapinevents"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "664628557717-7v987onuob6jrdoo8h53li3bpttb0ro9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAKhrg1xbwsua1QtsPCNIltMruCNrd8PbU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "664628557717-7v987onuob6jrdoo8h53li3bpttb0ro9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:664628557717:android:9866efbe5b657113",
+        "android_client_info": {
+          "package_name": "app.com.thecentaurusmall"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "664628557717-ql77sld2i2amshfa4qtl2as69vocmu9f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.com.thecentaurusmall",
+            "certificate_hash": "eebc9c69ae70685c2033e31c01708e517c7d3485"
+          }
+        },
+        {
+          "client_id": "664628557717-7v987onuob6jrdoo8h53li3bpttb0ro9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAKhrg1xbwsua1QtsPCNIltMruCNrd8PbU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "664628557717-7v987onuob6jrdoo8h53li3bpttb0ro9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:664628557717:android:24e31bdd34ae2c01",
+        "android_client_info": {
+          "package_name": "app.mapin.mapin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "664628557717-v0ia6lkkl3lj0v2p10q0bgd7i2lj44c2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.mapin.mapin",
+            "certificate_hash": "eebc9c69ae70685c2033e31c01708e517c7d3485"
+          }
+        },
+        {
+          "client_id": "664628557717-86lmnln6i4f27tl6srf79e9hb0nq1la9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.mapin.mapin",
+            "certificate_hash": "e0b43f0f68f7481ef8d05368709550c3cf94e5b5"
+          }
+        },
+        {
+          "client_id": "664628557717-eokke3ite848s43oh2g43nth7ma08ht4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.mapin.mapin",
+            "certificate_hash": "4ca202482f13d787cd813d2a8f3b181fba57082c"
+          }
+        },
+        {
+          "client_id": "664628557717-7v987onuob6jrdoo8h53li3bpttb0ro9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAKhrg1xbwsua1QtsPCNIltMruCNrd8PbU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "664628557717-7v987onuob6jrdoo8h53li3bpttb0ro9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
