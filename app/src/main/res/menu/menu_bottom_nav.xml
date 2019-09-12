@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/homeFragment"
+        android:icon="@drawable/ic_home_24dp"
+        android:title="@string/home"
+        />
+
+    <item
+        android:id="@+id/agendaFragment"
+        android:icon="@drawable/ic_view_agenda_24dp"
+        android:title="@string/agenda"
+        />
+
+    <item
+        android:id="@+id/scheduleFragment"
+        android:icon="@drawable/ic_schedule_24dp"
+        android:title="@string/schedule"
+        />
+
+    <item
+        android:id="@+id/mapInFragment"
+        android:icon="@drawable/ic_map_24dp"
+        android:title="@string/map"
+        />
+
+    <item
+        android:id="@+id/moreFragment"
+        android:icon="@drawable/ic_more_vert_24dp"
+        android:title="@string/more"
+        />
+</menu>

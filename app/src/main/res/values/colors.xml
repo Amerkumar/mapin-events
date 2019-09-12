@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorPrimary">#FFFFFF</color>
+    <color name="colorPrimaryDark">#AAAAAA</color>
     <color name="colorAccent">#D81B60</color>
+
+    <color name="colorMorning">#ffe3a7</color>
+
+    <color name="colorNoon">#ebbd65</color>
+
+    <color name="colorAfternoon">#FFB37B</color>
+
+    <color name="colorEvening">#FF8866</color>
+
+    <color name="googleBlue">#4885ed  </color>
+    <color name="googleRed">#db3236 </color>
+    <color name="googleGreen">#3cba54</color>
+    <color name="mapinBlue">#1976d2</color>
 </resources>

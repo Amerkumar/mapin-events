@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "664628557717-elnt13fuq8i8b8oqp8503m27lc72phnh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.com.mapinevents",
+            "certificate_hash": "eebc9c69ae70685c2033e31c01708e517c7d3485"
+          }
+        },
+        {
           "client_id": "664628557717-7v987onuob6jrdoo8h53li3bpttb0ro9.apps.googleusercontent.com",
           "client_type": 3
         }
