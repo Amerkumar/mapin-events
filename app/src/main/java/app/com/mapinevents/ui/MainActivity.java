@@ -1,10 +1,8 @@
 package app.com.mapinevents.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,6 +22,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import app.com.mapinevents.R;
+import app.com.mapinevents.SingletonAppClass;
 import app.com.mapinevents.utils.Utils;
 
 import static android.view.View.GONE;
@@ -32,6 +31,7 @@ public class MainActivity extends AppCompatActivity implements
         NavController.OnDestinationChangedListener {
 
     public static final int RC_SIGN_IN = 11;
+    public static boolean FIRST_APP_OPEN = true;
     private BottomNavigationView bottomNavigationView;
     private Toolbar toolbar;
     private NavController navController;
@@ -67,6 +67,9 @@ public class MainActivity extends AppCompatActivity implements
         NavigationUI.setupWithNavController(toolbar, navController, appBarConfiguration);
         navController.addOnDestinationChangedListener(this);
 
+        SingletonAppClass.getInstance().setFIRST_APP_OPEN(true);
+
+
     }
 
     @Override
@@ -98,7 +101,6 @@ public class MainActivity extends AppCompatActivity implements
             finish();
             return;
         }
-
         super.onBackPressed();
     }
 

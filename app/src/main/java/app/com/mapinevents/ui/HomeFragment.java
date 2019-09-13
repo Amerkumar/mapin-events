@@ -17,13 +17,18 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.wrdlbrnft.sortedlistadapter.SortedListAdapter;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.Comparator;
 import java.util.List;
 
 import app.com.mapinevents.R;
+import app.com.mapinevents.SingletonAppClass;
 import app.com.mapinevents.databinding.HomeFragmentBinding;
 import app.com.mapinevents.model.Annoucement;
 import app.com.mapinevents.ui.adapters.AnnoucementAdapter;
@@ -53,6 +58,9 @@ public class HomeFragment extends Fragment {
                     .navigate(R.id.loginFragment);
         }
 
+
+
+
     }
 
     @Override
@@ -66,6 +74,23 @@ public class HomeFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
+
+        if (SingletonAppClass.getInstance().isFIRST_APP_OPEN()) {
+            SingletonAppClass.getInstance().setFIRST_APP_OPEN(false);
+            FirebaseInstanceId.getInstance().getInstanceId()
+                    .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                            if (!task.isSuccessful()) {
+//                            Log.w(TAG, "getInstanceId failed", task.getException());
+                                return;
+                            }
+                            // Get new Instance ID token
+                            String token = task.getResult().getToken();
+                            mViewModel.sendFCMToken(FirebaseAuth.getInstance().getCurrentUser(), token);
+                        }
+                    });
+        }
 
         binding.exploreCardView.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_homeFragment_to_mapInFragment));
 

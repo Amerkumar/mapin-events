@@ -2,19 +2,29 @@ package app.com.mapinevents;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import app.com.mapinevents.model.Agenda;
 import app.com.mapinevents.model.Annoucement;
@@ -131,5 +141,28 @@ public class MainRepository {
                 });
 
         return scheduleList;
+    }
+
+    public void setFCMRegistrationToken(FirebaseUser user, String token) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("events_fcm_token", token);
+        data.put("name", user.getDisplayName());
+        data.put("email", user.getEmail());
+        data.put("last_open_ts", Timestamp.now());
+        data.put("mapin_events", true);
+        mFirestoreDb.collection("users").document(FirebaseAuth.getInstance().getUid())
+                .set(data, SetOptions.merge())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("Main Repo", "DocumentSnapshot successfully written!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("Main Repo", "Error writing document", e);
+                    }
+                });
     }
 }
