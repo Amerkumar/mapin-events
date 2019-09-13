@@ -28,4 +28,5 @@ public class ScheduleAdapter extends SortedListAdapter<Schedule> {
         final ScheduleItemBinding binding = ScheduleItemBinding.inflate(inflater, parent, false);
         return new ScheduleViewHolder(binding);
     }
+
 }
