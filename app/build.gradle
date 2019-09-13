@@ -61,7 +61,6 @@ dependencies {
     implementation 'com.github.wrdlbrnft:sorted-list-adapter:0.3.0.27'
 
 
-
     // Required only if Facebook login support is required
     // Find the latest Facebook SDK releases here: https://goo.gl/Ce5L94
     implementation 'com.facebook.android:facebook-android-sdk:[5,6)'
@@ -69,7 +68,6 @@ dependencies {
 
 //    mapbox
     implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:8.3.0'
-
 
 
     testImplementation 'junit:junit:4.12'

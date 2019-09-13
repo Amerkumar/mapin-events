@@ -70,7 +70,11 @@ public class MainActivity extends AppCompatActivity implements
     public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, @Nullable Bundle arguments) {
         switch (destination.getId()) {
             case R.id.loginFragment:
-                Utils.hideView(bottomNavigationView);
+                Utils.hideView(bottomNavigationView);;
+                break;
+            case R.id.mapInFragment:
+                Utils.showView(bottomNavigationView);
+//                toolbar.inflateMenu(R.menu.map_fragment_menu);
                 break;
             default:
                 Utils.showView(bottomNavigationView);

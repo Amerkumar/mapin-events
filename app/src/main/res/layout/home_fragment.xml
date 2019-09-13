@@ -15,6 +15,7 @@
             tools:context=".ui.HomeFragment">
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/explore_card_view"
                 style="@style/Widget.MaterialComponents.CardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

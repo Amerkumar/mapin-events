@@ -67,7 +67,11 @@ public class HomeFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
 
+        binding.exploreCardView.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_homeFragment_to_mapInFragment));
+
         annoucementAdapter = new AnnoucementAdapter(getContext(), Annoucement.class, COMPARATOR_ANNOUCEMENT);
+
+
 
         binding.annoucements.setAdapter(annoucementAdapter);
         binding.annoucements.setLayoutManager(new LinearLayoutManager(getContext()));

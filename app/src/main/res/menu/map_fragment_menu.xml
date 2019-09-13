@@ -1,0 +1,25 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/fragment_activity_menu_movie"
+        android:icon="@drawable/ic_settings_24dp"
+        android:title="Movie"
+        android:orderInCategory="4"
+        app:showAsAction="ifRoom|withText" />
+
+    <item
+        android:id="@+id/fragment_activity_menu_music"
+        android:icon="@drawable/ic_info_24dp"
+        android:title="Music"
+        android:orderInCategory="5"
+        app:showAsAction="ifRoom|withText" />
+
+    <item
+        android:id="@+id/fragment_activity_menu_sports"
+        android:icon="@drawable/ic_layers_24dp"
+        android:title="Sports"
+        android:orderInCategory="6"
+        app:showAsAction="ifRoom|withText" />
+
+</menu>

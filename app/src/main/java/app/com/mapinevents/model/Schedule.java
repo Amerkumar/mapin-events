@@ -9,6 +9,9 @@ import com.github.wrdlbrnft.sortedlistadapter.SortedListAdapter;
 import com.google.firebase.Timestamp;
 
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -177,17 +180,26 @@ public class Schedule implements SortedListAdapter.ViewModel, Parcelable {
     public String startTimeToDay(Timestamp start_time) {
         String pattern = "EEE";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-        return simpleDateFormat.format(start_time.toDate());
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(start_time.toDate());
+        cal.add(Calendar.HOUR, -12);
+        return simpleDateFormat.format(cal.getTime());
     }
 
     public String startTimeToTime(Timestamp start_time) {
         String pattern = "hh:mm";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-        return simpleDateFormat.format(start_time.toDate());
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(start_time.toDate());
+        cal.add(Calendar.HOUR, -12);
+        return simpleDateFormat.format(cal.getTime());
     }
     public String startTimeToAMPM(Timestamp start_time) {
         String pattern = "a";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-        return simpleDateFormat.format(start_time.toDate());
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(start_time.toDate());
+        cal.add(Calendar.HOUR, -12);
+        return simpleDateFormat.format(cal.getTime());
     }
 }

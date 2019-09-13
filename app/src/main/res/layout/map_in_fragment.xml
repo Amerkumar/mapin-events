@@ -27,6 +27,19 @@
             />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/symbol_layer_toggle_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|end"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="144dp"
+            android:src="@drawable/ic_layers_24dp"
+            android:backgroundTint="@color/mapinBlue"
+            app:tint="@android:color/white"
+            />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/light_fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

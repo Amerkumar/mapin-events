@@ -16,32 +16,37 @@ import android.view.ViewGroup;
 import com.google.firebase.auth.FirebaseAuth;
 
 import app.com.mapinevents.R;
-import app.com.mapinevents.databinding.MoreFragmentBinding;
-import app.com.mapinevents.viewmodels.MoreViewModel;
+import app.com.mapinevents.databinding.SettingsFragmentBinding;
 
-public class MoreFragment extends Fragment {
+public class SettingsFragment extends Fragment {
 
-    private MoreViewModel mViewModel;
-    private MoreFragmentBinding binding;
+    private SettingsViewModel mViewModel;
+    private SettingsFragmentBinding binding;
 
-    public static MoreFragment newInstance() {
-        return new MoreFragment();
+    public static SettingsFragment newInstance() {
+        return new SettingsFragment();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-
-        binding = MoreFragmentBinding.inflate(inflater, container, false);
+        binding = SettingsFragmentBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(MoreViewModel.class);
+        mViewModel = ViewModelProviders.of(this).get(SettingsViewModel.class);
         // TODO: Use the ViewModel
-        binding.settingsContainer.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_moreFragment_to_settingsFragment));
+        binding.signOutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FirebaseAuth.getInstance()
+                        .signOut();
+                Navigation.findNavController(view).navigate(R.id.action_settingsFragment_to_loginFragment);
+            }
+        });
     }
 
 }
