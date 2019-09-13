@@ -111,25 +111,6 @@ public class MapInFragment extends Fragment
         return binding.getRoot();
     }
 
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.map_fragment_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-
-        switch (item.getItemId()) {
-            case R.id.fragment_activity_menu_movie:
-                Toast.makeText(getContext(), "Click on mapin fragment", Toast.LENGTH_SHORT).show();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-
-        }
-
-    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {

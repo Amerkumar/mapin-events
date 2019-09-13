@@ -16,6 +16,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.Arrays;
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements
     private Toolbar toolbar;
     private NavController navController;
     private ProgressBar progressBar;
+    private AppBarLayout appbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements
                 R.id.moreFragment
         ));
 
+        appbar = findViewById(R.id.appBar);
         toolbar = findViewById(R.id.toolbar);
         progressBar = findViewById(R.id.progress_horizontal);
         bottomNavigationView = findViewById(R.id.bottom_nav);
@@ -70,13 +73,16 @@ public class MainActivity extends AppCompatActivity implements
     public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, @Nullable Bundle arguments) {
         switch (destination.getId()) {
             case R.id.loginFragment:
-                Utils.hideView(bottomNavigationView);;
+                Utils.hideView(bottomNavigationView);
+//                Utils.showView(appbar);
                 break;
             case R.id.mapInFragment:
                 Utils.showView(bottomNavigationView);
+//                Utils.hideView(appbar);
 //                toolbar.inflateMenu(R.menu.map_fragment_menu);
                 break;
             default:
+//                Utils.showView(appbar);
                 Utils.showView(bottomNavigationView);
                 break;
         }
