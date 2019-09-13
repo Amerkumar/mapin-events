@@ -5,6 +5,8 @@ import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.google.firebase.auth.FirebaseUser;
+
 import java.util.List;
 
 import app.com.mapinevents.MainRepository;
@@ -24,5 +26,9 @@ public class HomeViewModel extends ViewModel {
 
     public LiveData<List<Annoucement>> getmRecentAnnoucements() {
         return mRecentAnnoucements;
+    }
+
+    public void sendFCMToken(FirebaseUser user, String token) {
+        mMainRepository.setFCMRegistrationToken(user, token);
     }
 }
