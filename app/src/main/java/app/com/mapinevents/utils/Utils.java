@@ -39,4 +39,11 @@ public class Utils {
     public static String getEmojiByUnicode(int unicode) {
         return new String(Character.toChars(unicode));
     }
+
+    public static int getColorWithAlpha(float alpha, int baseColor) {
+        int a = Math.min(255, Math.max(0, (int) (alpha * 255))) << 24;
+        int rgb = 0x00ffffff & baseColor;
+        return a + rgb;
+    }
+
 }

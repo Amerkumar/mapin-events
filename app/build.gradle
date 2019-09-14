@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: "androidx.navigation.safeargs"
+
 
 android {
     compileSdkVersion 29
@@ -40,6 +42,8 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment:$nav_version"
     implementation "androidx.navigation:navigation-ui:$nav_version"
 
+    implementation 'com.instabug.library:instabug:8.6.3'
+
 
     // material design library
     implementation 'com.google.android.material:material:1.1.0-alpha10'
@@ -60,6 +64,8 @@ dependencies {
 
     implementation 'com.github.wrdlbrnft:sorted-list-adapter:0.3.0.27'
 
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
 
     // Required only if Facebook login support is required
     // Find the latest Facebook SDK releases here: https://goo.gl/Ce5L94
@@ -72,6 +78,8 @@ dependencies {
     // fcm
     implementation 'com.google.firebase:firebase-messaging:20.0.0'
 
+//    circular image view
+    implementation 'de.hdodenhof:circleimageview:3.0.1'
 
 
     testImplementation 'junit:junit:4.12'

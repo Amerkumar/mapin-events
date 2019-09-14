@@ -16,6 +16,8 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.instabug.library.Instabug;
+import com.instabug.library.invocation.InstabugInvocationEvent;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -36,12 +38,13 @@ public class MainActivity extends AppCompatActivity implements
     private Toolbar toolbar;
     private NavController navController;
     private ProgressBar progressBar;
-    private AppBarLayout appbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
 
 
         Set<Integer> topLevelDestinationsSet = new HashSet<>(Arrays.asList(
@@ -53,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements
                 R.id.moreFragment
         ));
 
-        appbar = findViewById(R.id.appBar);
+
         toolbar = findViewById(R.id.toolbar);
         progressBar = findViewById(R.id.progress_horizontal);
         bottomNavigationView = findViewById(R.id.bottom_nav);
@@ -68,6 +71,9 @@ public class MainActivity extends AppCompatActivity implements
         navController.addOnDestinationChangedListener(this);
 
         SingletonAppClass.getInstance().setFIRST_APP_OPEN(true);
+        new Instabug.Builder(getApplication(), "375042d402641872c2af38bf6d9c93b8")
+                .setInvocationEvents(InstabugInvocationEvent.SHAKE, InstabugInvocationEvent.SCREENSHOT)
+                .build();
 
 
     }
@@ -81,8 +87,14 @@ public class MainActivity extends AppCompatActivity implements
                 break;
             case R.id.mapInFragment:
                 Utils.showView(bottomNavigationView);
-//                Utils.hideView(appbar);
-//                toolbar.inflateMenu(R.menu.map_fragment_menu);
+                break;
+            case R.id.scheduleDetailFragment:
+                Utils.hideView(bottomNavigationView);
+                break;
+            case R.id.settingsFragment:
+            case R.id.aboutDeveloperTeamFragment:
+            case R.id.infoFragment:
+                Utils.hideView(bottomNavigationView);
                 break;
             default:
 //                Utils.showView(appbar);

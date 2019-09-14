@@ -3,11 +3,13 @@ package app.com.mapinevents.ui;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.util.Log;
@@ -29,12 +31,14 @@ import app.com.mapinevents.viewmodels.ScheduleViewModel;
 
 public class ScheduleFragment extends Fragment {
 
+    private static final String KEY_LAYOUT = "KEY";
     private ScheduleViewModel mViewModel;
 
     private static final Comparator<Schedule> COMPARATOR_SCHEDULE = new SortedListAdapter.ComparatorBuilder<Schedule>()
             .setOrderForModel(Schedule.class, (a, b) -> Integer.signum(a.getRank() - b.getRank()))
             .build();
     private ScheduleFragmentBinding binding;
+    private View rootView;
 
 
     public static ScheduleFragment newInstance() {
@@ -44,15 +48,30 @@ public class ScheduleFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        binding = ScheduleFragmentBinding.inflate(inflater, container, false);
+        if (rootView == null) {
+            binding = ScheduleFragmentBinding.inflate(inflater, container, false);
+            rootView = binding.getRoot();
+        }
         return binding.getRoot();
     }
+
+//    @Override
+//    public void onSaveInstanceState(@NonNull Bundle outState) {
+//        super.onSaveInstanceState(outState);
+//        outState.putParcelable(KEY_LAYOUT, binding.scheduleRecyclerView.getLayoutManager().onSaveInstanceState());
+//
+//    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(ScheduleViewModel.class);
-        ScheduleAdapter scheduleAdapter = new ScheduleAdapter(getContext(), Schedule.class, COMPARATOR_SCHEDULE);
+        ScheduleAdapter scheduleAdapter = new ScheduleAdapter(getContext(), Schedule.class, COMPARATOR_SCHEDULE, schedule -> {
+
+            ScheduleFragmentDirections.ActionScheduleFragmentToScheduleDetailFragment actionScheduleFragmentToScheduleDetailFragment =
+                    ScheduleFragmentDirections.actionScheduleFragmentToScheduleDetailFragment(schedule);
+            Navigation.findNavController(binding.getRoot()).navigate(actionScheduleFragmentToScheduleDetailFragment);
+        });
         binding.scheduleRecyclerView.setAdapter(scheduleAdapter);
         binding.scheduleRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mViewModel.getScheduleObservable().observe(this, new Observer<List<Schedule>>() {
@@ -69,6 +88,12 @@ public class ScheduleFragment extends Fragment {
                 }
             }
         });
+
+//        if (savedInstanceState != null) {
+//            binding.scheduleRecyclerView.getLayoutManager().onRestoreInstanceState(
+//                    savedInstanceState.getParcelable(KEY_LAYOUT));
+//        }
+
     }
 
 }

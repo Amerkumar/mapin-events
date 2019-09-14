@@ -14,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.instabug.library.Instabug;
 
 import app.com.mapinevents.R;
 import app.com.mapinevents.databinding.MoreFragmentBinding;
@@ -41,7 +43,18 @@ public class MoreFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(MoreViewModel.class);
         // TODO: Use the ViewModel
+        binding.infoContainer.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_moreFragment_to_infoFragment));
         binding.settingsContainer.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_moreFragment_to_settingsFragment));
+        binding.feedbackContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                if (user.getDisplayName() != null)
+                    Instabug.identifyUser(user.getDisplayName(), user.getEmail());
+                Instabug.show();
+
+            }
+        });
     }
 
 }

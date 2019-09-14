@@ -1,5 +1,7 @@
 package app.com.mapinevents;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -143,22 +145,41 @@ public class MainRepository {
         return scheduleList;
     }
 
-    public void setFCMRegistrationToken(FirebaseUser user, String token) {
+    public void setFCMRegistrationToken(FirebaseUser user, String token, boolean isTrue) {
         Map<String, Object> data = new HashMap<>();
 
-            data.put("events_fcm_token", token);
-            if (user.getDisplayName() != null)
-                data.put("name", user.getDisplayName());
-            data.put("email", user.getEmail());
-            data.put("last_open_ts", Timestamp.now());
-            data.put("mapin_events", true);
-
+        data.put("events_fcm_token", token);
+        if (user.getDisplayName() != null)
+            data.put("name", user.getDisplayName());
+        data.put("email", user.getEmail());
+        data.put("last_open_ts", Timestamp.now());
+        data.put("mapin_events", true);
+        data.put("notification_annoucements", isTrue);
         mFirestoreDb.collection("users").document(FirebaseAuth.getInstance().getUid())
                 .set(data, SetOptions.merge())
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Log.d("Main Repo", "DocumentSnapshot successfully written!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("Main Repo", "Error writing document", e);
+                    }
+                });
+    }
+
+    public void setAnnoucementNotification(boolean isTrue) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("notification_annoucements", isTrue);
+        mFirestoreDb.collection("users").document(FirebaseAuth.getInstance().getUid())
+                .set(data, SetOptions.merge())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

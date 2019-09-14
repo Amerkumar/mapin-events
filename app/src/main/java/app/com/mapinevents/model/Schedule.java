@@ -9,10 +9,8 @@ import com.github.wrdlbrnft.sortedlistadapter.SortedListAdapter;
 import com.google.firebase.Timestamp;
 
 import java.text.SimpleDateFormat;
-import java.time.ZoneId;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 public class Schedule implements SortedListAdapter.ViewModel, Parcelable {
@@ -26,8 +24,19 @@ public class Schedule implements SortedListAdapter.ViewModel, Parcelable {
     private Timestamp start_time;
     private Timestamp end_time;
     private HashMap<String, Double> _geoloc;
+    private String url;
 
-    public Schedule(String id, int rank, String title, String description, String category, String place, Timestamp start_time, Timestamp end_time, HashMap<String, Double> _geoloc) {
+    public List<Speaker> getSpeakers() {
+        return speakers;
+    }
+
+    public void setSpeakers(List<Speaker> speakers) {
+        this.speakers = speakers;
+    }
+
+    private List<Speaker> speakers;
+
+    public Schedule(String id, int rank, String title, String description, String category, String place, Timestamp start_time, Timestamp end_time, HashMap<String, Double> _geoloc, String url, List<Speaker> speakers) {
         this.id = id;
         this.rank = rank;
         this.title = title;
@@ -37,6 +46,8 @@ public class Schedule implements SortedListAdapter.ViewModel, Parcelable {
         this.start_time = start_time;
         this.end_time = end_time;
         this._geoloc = _geoloc;
+        this.url = url;
+        this.speakers = speakers;
     }
 
     public Schedule() {
@@ -52,6 +63,8 @@ public class Schedule implements SortedListAdapter.ViewModel, Parcelable {
         place = in.readString();
         start_time = in.readParcelable(Timestamp.class.getClassLoader());
         end_time = in.readParcelable(Timestamp.class.getClassLoader());
+        _geoloc = in.readHashMap(HashMap.class.getClassLoader());
+        speakers = in.readArrayList(List.class.getClassLoader());
     }
 
     public static final Creator<Schedule> CREATOR = new Creator<Schedule>() {
@@ -68,7 +81,7 @@ public class Schedule implements SortedListAdapter.ViewModel, Parcelable {
 
     @Override
     public <T> boolean isSameModelAs(@NonNull T model) {
-        if (model instanceof Annoucement) {
+        if (model instanceof Schedule) {
             final Schedule other = (Schedule) model;
             return other.id == id;
         }
@@ -175,6 +188,8 @@ public class Schedule implements SortedListAdapter.ViewModel, Parcelable {
         parcel.writeString(place);
         parcel.writeParcelable(start_time, i);
         parcel.writeParcelable(end_time, i);
+        parcel.writeMap(_geoloc);
+//        parcel.writearray(speakers, 0);
     }
 
     public String startTimeToDay(Timestamp start_time) {
@@ -201,5 +216,24 @@ public class Schedule implements SortedListAdapter.ViewModel, Parcelable {
 //        cal.setTime(start_time.toDate());
 //        cal.add(Calendar.HOUR, -12);
         return simpleDateFormat.format(start_time.toDate());
+    }
+
+//    Tue, 17th, 2:00 PM - 3:00 PM
+    public String timeToDetailFormat(Timestamp start_time, Timestamp end_time) {
+        String pattern = "EEE, dd, hh:mm a";
+        String pattern1 = "hh:mm a";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat(pattern1);
+        return simpleDateFormat.format(start_time.toDate()) + " - " + simpleDateFormat1.format(end_time.toDate());
+    }
+
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+
     }
 }
