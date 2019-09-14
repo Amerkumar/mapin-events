@@ -180,26 +180,26 @@ public class Schedule implements SortedListAdapter.ViewModel, Parcelable {
     public String startTimeToDay(Timestamp start_time) {
         String pattern = "EEE";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(start_time.toDate());
-        cal.add(Calendar.HOUR, -12);
-        return simpleDateFormat.format(cal.getTime());
+//        Calendar cal = Calendar.getInstance();
+//        cal.setTime(start_time.toDate());
+//        cal.add(Calendar.HOUR, -12);
+        return simpleDateFormat.format(start_time.toDate());
     }
 
     public String startTimeToTime(Timestamp start_time) {
         String pattern = "hh:mm";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(start_time.toDate());
-        cal.add(Calendar.HOUR, -12);
-        return simpleDateFormat.format(cal.getTime());
+//        Calendar cal = Calendar.getInstance();
+//        cal.setTime(start_time.toDate());
+//        cal.add(Calendar.HOUR, -12);
+        return simpleDateFormat.format(start_time.toDate());
     }
     public String startTimeToAMPM(Timestamp start_time) {
         String pattern = "a";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(start_time.toDate());
-        cal.add(Calendar.HOUR, -12);
-        return simpleDateFormat.format(cal.getTime());
+//        Calendar cal = Calendar.getInstance();
+//        cal.setTime(start_time.toDate());
+//        cal.add(Calendar.HOUR, -12);
+        return simpleDateFormat.format(start_time.toDate());
     }
 }

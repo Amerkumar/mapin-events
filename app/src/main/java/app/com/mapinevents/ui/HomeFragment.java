@@ -58,9 +58,6 @@ public class HomeFragment extends Fragment {
                     .navigate(R.id.loginFragment);
         }
 
-
-
-
     }
 
     @Override
@@ -75,7 +72,8 @@ public class HomeFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
 
-        if (SingletonAppClass.getInstance().isFIRST_APP_OPEN()) {
+
+        if (FirebaseAuth.getInstance().getCurrentUser() != null && SingletonAppClass.getInstance().isFIRST_APP_OPEN()) {
             SingletonAppClass.getInstance().setFIRST_APP_OPEN(false);
             FirebaseInstanceId.getInstance().getInstanceId()
                     .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
