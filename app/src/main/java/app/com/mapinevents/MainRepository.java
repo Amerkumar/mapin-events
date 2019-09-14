@@ -145,11 +145,14 @@ public class MainRepository {
 
     public void setFCMRegistrationToken(FirebaseUser user, String token) {
         Map<String, Object> data = new HashMap<>();
-        data.put("events_fcm_token", token);
-        data.put("name", user.getDisplayName());
-        data.put("email", user.getEmail());
-        data.put("last_open_ts", Timestamp.now());
-        data.put("mapin_events", true);
+
+            data.put("events_fcm_token", token);
+            if (user.getDisplayName() != null)
+                data.put("name", user.getDisplayName());
+            data.put("email", user.getEmail());
+            data.put("last_open_ts", Timestamp.now());
+            data.put("mapin_events", true);
+
         mFirestoreDb.collection("users").document(FirebaseAuth.getInstance().getUid())
                 .set(data, SetOptions.merge())
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
