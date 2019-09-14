@@ -40,6 +40,9 @@
         <action
             android:id="@+id/action_scheduleDetailFragment_to_mapInFragment"
             app:destination="@id/mapInFragment" />
+        <argument
+            android:name="scheduleModel"
+            app:argType="app.com.mapinevents.model.Schedule" />
     </fragment>
     <fragment
         android:id="@+id/mapInFragment"
@@ -54,6 +57,9 @@
         <action
             android:id="@+id/action_moreFragment_to_settingsFragment"
             app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_moreFragment_to_infoFragment"
+            app:destination="@id/infoFragment" />
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
@@ -72,5 +78,18 @@
         <action
             android:id="@+id/action_settingsFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_aboutDeveloperTeamFragment"
+            app:destination="@id/aboutDeveloperTeamFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/aboutDeveloperTeamFragment"
+        android:name="app.com.mapinevents.ui.AboutDeveloperTeamFragment"
+        android:label="about_developer_team_fragment"
+        tools:layout="@layout/about_developer_team_fragment" />
+    <fragment
+        android:id="@+id/infoFragment"
+        android:name="app.com.mapinevents.ui.InfoFragment"
+        android:label="Info"
+        tools:layout="@layout/info_fragment" />
 </navigation>

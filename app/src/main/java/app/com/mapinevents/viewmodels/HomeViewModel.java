@@ -28,7 +28,7 @@ public class HomeViewModel extends ViewModel {
         return mRecentAnnoucements;
     }
 
-    public void sendFCMToken(FirebaseUser user, String token) {
-        mMainRepository.setFCMRegistrationToken(user, token);
+    public void sendFCMToken(FirebaseUser user, String token, boolean isTrue) {
+        mMainRepository.setFCMRegistrationToken(user, token, isTrue);
     }
 }

@@ -3,6 +3,8 @@ package app.com.mapinevents.ui;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -85,7 +87,10 @@ public class HomeFragment extends Fragment {
                             }
                             // Get new Instance ID token
                             String token = task.getResult().getToken();
-                            mViewModel.sendFCMToken(FirebaseAuth.getInstance().getCurrentUser(), token);
+                            SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                            boolean swichBool = sharedPref.getBoolean(getString(R.string.notification_annoucement_key), true);
+
+                            mViewModel.sendFCMToken(FirebaseAuth.getInstance().getCurrentUser(),token, swichBool);
                         }
                     });
         }
@@ -98,7 +103,6 @@ public class HomeFragment extends Fragment {
 
         binding.annoucements.setAdapter(annoucementAdapter);
         binding.annoucements.setLayoutManager(new LinearLayoutManager(getContext()));
-        // TODO: Use the ViewModel
         mViewModel.getmRecentAnnoucements().observe(this, new Observer<List<Annoucement>>() {
             @Override
             public void onChanged(List<Annoucement> annoucements) {
@@ -109,6 +113,11 @@ public class HomeFragment extends Fragment {
                     annoucementAdapter.edit()
                             .replaceAll(annoucements)
                             .commit();
+                    if (annoucements.size() == 0) {
+                        binding.noAnnoucementsTextview.setVisibility(View.VISIBLE);
+                    } else {
+                        binding.noAnnoucementsTextview.setVisibility(View.GONE);
+                    }
                 } else {
                     ((MainActivity)getActivity()).showProgressBar();
                 }

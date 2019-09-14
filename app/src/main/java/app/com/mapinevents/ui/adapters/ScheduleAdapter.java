@@ -17,16 +17,22 @@ import app.com.mapinevents.ui.viewholders.ScheduleViewHolder;
 
 public class ScheduleAdapter extends SortedListAdapter<Schedule> {
 
+    public interface Listener {
+        void onScheduleItemClicked(Schedule schedule);
+    }
 
-    public ScheduleAdapter(@NonNull Context context, @NonNull Class<Schedule> itemClass, @NonNull Comparator<Schedule> comparator) {
+    private final Listener mScheduleItemClickListener;
+
+    public ScheduleAdapter(@NonNull Context context, @NonNull Class<Schedule> itemClass, @NonNull Comparator<Schedule> comparator, Listener listener) {
         super(context, itemClass, comparator);
+        mScheduleItemClickListener = listener;
     }
 
     @NonNull
     @Override
     protected ViewHolder<? extends Schedule> onCreateViewHolder(@NonNull LayoutInflater inflater, @NonNull ViewGroup parent, int viewType) {
         final ScheduleItemBinding binding = ScheduleItemBinding.inflate(inflater, parent, false);
-        return new ScheduleViewHolder(binding);
+        return new ScheduleViewHolder(binding, mScheduleItemClickListener);
     }
 
 }

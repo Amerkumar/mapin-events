@@ -1,85 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".ui.ScheduleDetailFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ImageView
+
+
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:src="@drawable/app_with_hand"
-        android:scaleType="centerCrop"
-        />
+        android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Beyond Mobile: Material Design, Adaptable UI and Flutter"
-        android:textColor="@android:color/black"
-        android:layout_margin="16dp"
-        android:padding="4dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            tools:context=".ui.ScheduleDetailFragment">
 
+            <ImageView
+                android:id="@+id/main_image_view_schedule"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/error_placeholder" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Tue, 17th, 2:00 PM - 3:00 PM"
-        android:textColor="@android:color/darker_gray"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:padding="4dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-        />
+            <TextView
+                android:id="@+id/title_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:padding="4dp"
+                android:text="Title"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                android:textColor="@android:color/black" />
 
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Hall 4"
-        android:textColor="@android:color/darker_gray"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:padding="4dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-        />
+            <TextView
+                android:id="@+id/time_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:padding="4dp"
+                android:text="date here"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textColor="@android:color/darker_gray" />
+
+
+            <TextView
+                android:id="@+id/place_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:padding="4dp"
+                android:text="Congress Center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textColor="@android:color/darker_gray" />
+
+
+            <TextView
+                android:id="@+id/description_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:padding="4dp"
+                android:text="@string/lorem_ipsum"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+            <TextView
+                android:id="@+id/speakers_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:padding="4dp"
+                android:text="Speakers"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@android:color/black" />
+
+            <LinearLayout
+                android:id="@+id/speakers_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:orientation="vertical"
+                android:padding="4dp">
 
 
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/lorem_ipsum"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:padding="4dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Speakers"
-        android:layout_margin="16dp"
-        android:padding="4dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:textColor="@android:color/black"
-        />
+            </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:padding="4dp"
-        android:orientation="vertical"
-        >
-
-
-
-    </LinearLayout>
-
-</LinearLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</layout>
