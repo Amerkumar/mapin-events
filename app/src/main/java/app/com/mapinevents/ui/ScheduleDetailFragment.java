@@ -1,6 +1,7 @@
 package app.com.mapinevents.ui;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -8,6 +9,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -57,7 +59,15 @@ public class ScheduleDetailFragment extends Fragment {
         Schedule schedule = ScheduleDetailFragmentArgs.fromBundle(getArguments()).getScheduleModel();
 
         if (schedule.getUrl() != null && !schedule.getUrl().isEmpty()) {
-            Picasso.get().load(schedule.getUrl()).placeholder(R.drawable.error_placeholder).into(binding.mainImageViewSchedule);
+            Picasso.get().load(schedule.getUrl())
+                    .placeholder(R.drawable.progress_animation)
+                    .config(Bitmap.Config.ARGB_4444)
+                    .fit()
+                    .centerCrop()
+                    .error(R.drawable.error_placeholder)
+                    .into(binding.mainImageViewSchedule);
+        } else {
+            binding.mainImageViewSchedule.setScaleType(ImageView.ScaleType.CENTER_CROP);
         }
 
         if (schedule.getTitle() != null && !schedule.getTitle().isEmpty()) {

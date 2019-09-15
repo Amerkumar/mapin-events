@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -73,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements
         SingletonAppClass.getInstance().setFIRST_APP_OPEN(true);
         try {
             new Instabug.Builder(getApplication(), "375042d402641872c2af38bf6d9c93b8")
-                    .setInvocationEvents(InstabugInvocationEvent.SHAKE, InstabugInvocationEvent.SCREENSHOT)
+                    .setInvocationEvents(InstabugInvocationEvent.SHAKE)
                     .build();
 
         }  catch (Exception e) {
