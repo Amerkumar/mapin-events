@@ -22,6 +22,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.afollestad.materialdialogs.DialogBehavior;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.internal.main.DialogLayout;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
@@ -172,6 +175,10 @@ public class MapInFragment extends Fragment
 //
                                 symbolLayer.setFilter(eq(literal("$type"), literal("Point")));
                                 style.addLayerAbove(symbolLayer, "expo-center-layer");
+
+
+
+
 
                                 binding.threedimenFab.setOnClickListener(new View.OnClickListener() {
                                     @Override

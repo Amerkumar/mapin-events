@@ -73,9 +73,10 @@ public class MainActivity extends AppCompatActivity implements
 
         SingletonAppClass.getInstance().setFIRST_APP_OPEN(true);
         try {
-            new Instabug.Builder(getApplication(), "375042d402641872c2af38bf6d9c93b8")
+            Instabug instabug = new Instabug.Builder(getApplication(), "375042d402641872c2af38bf6d9c93b8")
                     .setInvocationEvents(InstabugInvocationEvent.SHAKE)
                     .build();
+            SingletonAppClass.getInstance().setInstabug(instabug);
 
         }  catch (Exception e) {
             e.printStackTrace();

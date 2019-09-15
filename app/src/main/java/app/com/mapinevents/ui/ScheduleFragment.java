@@ -39,6 +39,7 @@ public class ScheduleFragment extends Fragment {
             .build();
     private ScheduleFragmentBinding binding;
     private View rootView;
+    private ScheduleAdapter scheduleAdapter;
 
 
     public static ScheduleFragment newInstance() {
@@ -51,35 +52,31 @@ public class ScheduleFragment extends Fragment {
         if (rootView == null) {
             binding = ScheduleFragmentBinding.inflate(inflater, container, false);
             rootView = binding.getRoot();
+            scheduleAdapter = new ScheduleAdapter(getContext(), Schedule.class, COMPARATOR_SCHEDULE, schedule -> {
+
+                ScheduleFragmentDirections.ActionScheduleFragmentToScheduleDetailFragment actionScheduleFragmentToScheduleDetailFragment =
+                        ScheduleFragmentDirections.actionScheduleFragmentToScheduleDetailFragment(schedule);
+                Navigation.findNavController(binding.getRoot()).navigate(actionScheduleFragmentToScheduleDetailFragment);
+            });
+            binding.scheduleRecyclerView.setAdapter(scheduleAdapter);
+            binding.scheduleRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         }
         return binding.getRoot();
     }
 
-//    @Override
-//    public void onSaveInstanceState(@NonNull Bundle outState) {
-//        super.onSaveInstanceState(outState);
-//        outState.putParcelable(KEY_LAYOUT, binding.scheduleRecyclerView.getLayoutManager().onSaveInstanceState());
-//
-//    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(ScheduleViewModel.class);
-        ScheduleAdapter scheduleAdapter = new ScheduleAdapter(getContext(), Schedule.class, COMPARATOR_SCHEDULE, schedule -> {
 
-            ScheduleFragmentDirections.ActionScheduleFragmentToScheduleDetailFragment actionScheduleFragmentToScheduleDetailFragment =
-                    ScheduleFragmentDirections.actionScheduleFragmentToScheduleDetailFragment(schedule);
-            Navigation.findNavController(binding.getRoot()).navigate(actionScheduleFragmentToScheduleDetailFragment);
-        });
-        binding.scheduleRecyclerView.setAdapter(scheduleAdapter);
-        binding.scheduleRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mViewModel.getScheduleObservable().observe(this, new Observer<List<Schedule>>() {
             @Override
             public void onChanged(List<Schedule> schedules) {
                 if (schedules != null) {
                     ((MainActivity)getActivity()).hideProgressBar();
-                    scheduleAdapter.edit().removeAll().commit();
+//                    scheduleAdapter.edit().removeAll().commit();
+                    Log.d(ScheduleFragment.class.getSimpleName(), String.valueOf(scheduleAdapter.getItemCount()));
                     scheduleAdapter.edit()
                             .replaceAll(schedules)
                             .commit();
@@ -88,12 +85,6 @@ public class ScheduleFragment extends Fragment {
                 }
             }
         });
-
-//        if (savedInstanceState != null) {
-//            binding.scheduleRecyclerView.getLayoutManager().onRestoreInstanceState(
-//                    savedInstanceState.getParcelable(KEY_LAYOUT));
-//        }
-
     }
 
 }

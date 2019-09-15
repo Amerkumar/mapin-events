@@ -208,7 +208,7 @@ public class LoginFragment extends Fragment {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         e.printStackTrace();
-                        Snackbar.make(binding.getRoot(), e.getMessage(), Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(binding.getRoot(), "Unable to login with Facebook", Snackbar.LENGTH_SHORT).show();
                         ((MainActivity) Objects.requireNonNull(getActivity())).hideProgressBar();
                         binding.googleSignInButton.setEnabled(true);
                         binding.facebookSignInButton.setEnabled(true);

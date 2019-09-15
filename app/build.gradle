@@ -81,6 +81,14 @@ dependencies {
 //    circular image view
     implementation 'de.hdodenhof:circleimageview:3.0.1'
 
+//    material dialog
+    implementation 'com.afollestad.material-dialogs:core:3.1.1'
+
+    implementation 'com.afollestad.material-dialogs:lifecycle:3.1.1'
+
+
+
+
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'

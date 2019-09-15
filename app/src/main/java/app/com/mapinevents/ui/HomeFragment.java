@@ -75,7 +75,6 @@ public class HomeFragment extends Fragment {
         mViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
 
         if (FirebaseAuth.getInstance().getCurrentUser() != null && SingletonAppClass.getInstance().isFIRST_APP_OPEN()) {
-            SingletonAppClass.getInstance().setFIRST_APP_OPEN(false);
             FirebaseInstanceId.getInstance().getInstanceId()
                     .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
                         @Override
@@ -88,7 +87,7 @@ public class HomeFragment extends Fragment {
                             String token = task.getResult().getToken();
                             SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
                             boolean swichBool = sharedPref.getBoolean(getString(R.string.notification_annoucement_key), true);
-
+                            SingletonAppClass.getInstance().setFIRST_APP_OPEN(false);
                             mViewModel.sendFCMToken(FirebaseAuth.getInstance().getCurrentUser(),token, swichBool);
                         }
                     });
