@@ -5,6 +5,10 @@ import android.animation.AnimatorListenerAdapter;
 import android.view.View;
 
 public class Utils {
+
+
+
+
     public static void hideView(final View view) {
         view.animate()
                 .translationY(view.getHeight())

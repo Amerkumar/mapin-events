@@ -1,6 +1,7 @@
 package app.com.mapinevents.ui;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -9,9 +10,6 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -20,11 +18,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.afollestad.materialdialogs.DialogBehavior;
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.afollestad.materialdialogs.internal.main.DialogLayout;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
@@ -35,7 +31,6 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.mapboxsdk.maps.SupportMapFragment;
 import com.mapbox.mapboxsdk.style.layers.FillExtrusionLayer;
-import com.mapbox.mapboxsdk.style.layers.Layer;
 import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
 import com.mapbox.mapboxsdk.style.light.Light;
 import com.mapbox.mapboxsdk.style.light.Position;
@@ -46,11 +41,11 @@ import java.net.URISyntaxException;
 
 import app.com.mapinevents.R;
 import app.com.mapinevents.databinding.MapInFragmentBinding;
+import app.com.mapinevents.utils.MapInConstants;
 import app.com.mapinevents.viewmodels.MapInViewModel;
+import app.com.mapinevents.viewmodels.SharedViewModel;
 
-import static com.mapbox.mapboxsdk.style.expressions.Expression.eq;
 import static com.mapbox.mapboxsdk.style.expressions.Expression.get;
-import static com.mapbox.mapboxsdk.style.expressions.Expression.literal;
 import static com.mapbox.mapboxsdk.style.expressions.Expression.rgba;
 import static com.mapbox.mapboxsdk.style.layers.Property.NONE;
 import static com.mapbox.mapboxsdk.style.layers.Property.TEXT_ANCHOR_BOTTOM;
@@ -86,12 +81,16 @@ public class MapInFragment extends Fragment
     private float[] inclinationMatrix = new float[9];
     private float[] rotationMatrix = new float[9];
 
+
     // Amplifiers that translate small phone orientation movements into larger viewable map changes.
 // Pitch is negative to compensate for the negative readings from the device while face up
 // 90 is used based on the viewable angle when viewing the map (from phone being flat to facing you).
     private static final int PITCH_AMPLIFIER = -90;
     private static final int BEARING_AMPLIFIER = 90;
     private MapboxMap mMap;
+    private SymbolLayer hallsLayer;
+    private SymbolLayer stallsLayer;
+    private SharedViewModel model;
 
 
     public static MapInFragment newInstance() {
@@ -120,9 +119,153 @@ public class MapInFragment extends Fragment
         super.onActivityCreated(savedInstanceState);
 
         mViewModel = ViewModelProviders.of(this).get(MapInViewModel.class);
+        model = ViewModelProviders.of(getActivity()).get(SharedViewModel.class);
         // TODO: Use the ViewModel
 
         SupportMapFragment mapFragment;
+
+
+//        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sharedPref.edit();
+//        editor.putBoolean(getString(R.string.mapbox_), false);
+//        editor.commit();
+
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        int mapStyle = sharedPref.getInt(getString(R.string.map_style), MapInConstants.MAPBOX_STREET);
+        boolean hallsVisible = sharedPref.getBoolean(getString(R.string.labels_halls), true);
+        boolean stallsVisible = sharedPref.getBoolean(getString(R.string.labels_stalls), false);
+        boolean threeDimenViewEnable = sharedPref.getBoolean(getString(R.string.three_dimen_view), true);
+
+        model.getMapTypeSelected().observe(getActivity(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                if (mMap != null) {
+
+                    switch (integer) {
+                        case MapInConstants.MAPBOX_STREET:
+                            mMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
+                                @Override
+                                public void onStyleLoaded(@NonNull Style style) {
+                                    setupMainLayer(style);
+                                    setupLight(style);
+                                }
+                            });
+                            break;
+                        case MapInConstants.MAPBOX_LIGHT:
+                            mMap.setStyle(Style.LIGHT, new Style.OnStyleLoaded() {
+                                @Override
+                                public void onStyleLoaded(@NonNull Style style) {
+                                    setupMainLayer(style);
+                                    setupLight(style);
+                                }
+                            });
+                            break;
+                        case MapInConstants.MAPBOX_DARK:
+                            mMap.setStyle(Style.DARK, new Style.OnStyleLoaded() {
+                                @Override
+                                public void onStyleLoaded(@NonNull Style style) {
+                                    setupMainLayer(style);
+                                    setupLight(style);
+                                }
+                            });
+                            break;
+
+                    }
+                }
+            }
+        });
+
+        model.getHallsVisible().observe(getActivity(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+
+                if (mMap != null) {
+                    if (aBoolean) {
+                        if (hallsLayer != null) {
+                            hallsLayer.setProperties(visibility(VISIBLE));
+                        } else {
+                            mMap.getStyle(new Style.OnStyleLoaded() {
+                                @Override
+                                public void onStyleLoaded(@NonNull Style style) {
+                                    setUpHallLayer(style);
+                                    hallsLayer.setProperties(visibility(VISIBLE));
+                                }
+                            });
+                        }
+                    } else {
+                        if (hallsLayer != null) {
+                            hallsLayer.setProperties(visibility(NONE));
+                        } else {
+                            mMap.getStyle(new Style.OnStyleLoaded() {
+                                @Override
+                                public void onStyleLoaded(@NonNull Style style) {
+                                    setUpHallLayer(style);
+                                    hallsLayer.setProperties(visibility(NONE));
+                                }
+                            });
+                        }
+                    }
+                }
+
+            }
+        });
+
+        model.getStallsVisible().observe(getActivity(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+
+                if (mMap != null) {
+                    if (aBoolean) {
+                        if (stallsLayer != null) {
+                            stallsLayer.setProperties(visibility(VISIBLE));
+                        } else {
+                            mMap.getStyle(new Style.OnStyleLoaded() {
+                                @Override
+                                public void onStyleLoaded(@NonNull Style style) {
+                                    setUpStallLayer(style);
+                                    stallsLayer.setProperties(visibility(VISIBLE));
+                                }
+                            });
+                        }
+
+                    } else {
+                        if (stallsLayer != null) {
+                            stallsLayer.setProperties(visibility(NONE));
+                        } else {
+                            mMap.getStyle(new Style.OnStyleLoaded() {
+                                @Override
+                                public void onStyleLoaded(@NonNull Style style) {
+                                    setUpStallLayer(style);
+                                    stallsLayer.setProperties(visibility(NONE));
+                                }
+                            });
+                        }
+                    }
+                }
+
+            }
+        });
+
+        model.getThreeDimenViewEnable().observe(getActivity(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (mMap != null) {
+                    if (aBoolean) {
+                        registerSensorListener();
+                    } else {
+                        unregisterSensorListener();
+                    }
+                }
+            }
+        });
+
+        binding.symbolLayerToggleFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MapFilterBottomSheetDialogFragment bottomSheetDialog = new MapFilterBottomSheetDialogFragment();
+                bottomSheetDialog.show(getActivity().getSupportFragmentManager(), bottomSheetDialog.getTag());
+            }
+        });
 
         if (savedInstanceState == null) {
             final FragmentTransaction transaction = getActivity().getSupportFragmentManager()
@@ -131,6 +274,8 @@ public class MapInFragment extends Fragment
             MapboxMapOptions options = MapboxMapOptions.createFromAttributes(getContext(), null);
             options.camera(new CameraPosition.Builder()
                     .target(new LatLng(24.901317946386918, 67.07612826571307))
+                    .bearing(145)
+                    .tilt(45)
                     .zoom(17)
                     .build());
 
@@ -146,77 +291,92 @@ public class MapInFragment extends Fragment
                 @Override
                 public void onMapReady(@NonNull MapboxMap mapboxMap) {
                     mMap = mapboxMap;
-                    mapboxMap.setStyle(Style.DARK, new Style.OnStyleLoaded() {
-                        @Override
-                        public void onStyleLoaded(@NonNull Style style) {
-
-                            // Map is set up and the style has loaded. Now you can add data or make other map adjustments
-                            try {
-                                style.addSource(new GeoJsonSource("expo-center", new URI("asset://ground_indoor.geojson")));
-
-                                style.addLayer(new FillExtrusionLayer(
-                                        "expo-center-layer", "expo-center").withProperties(
-                                        fillExtrusionColor(rgba(get("red"), get("green"), get("blue"), get("alpha"))),
-                                        fillExtrusionHeight(get("height")),
-                                        fillExtrusionOpacity(0.5f)
-                                ));
-
-                                setupLight(style);
-
-                                SymbolLayer symbolLayer = new SymbolLayer("expo-center-pois", "expo-center");
-
-                                symbolLayer.setProperties(textColor(Color.WHITE),
-                                        textField(get("Name")),
-                                        textSize(10.0f),
-                                        textVariableAnchor(
-                                                new String[]{TEXT_ANCHOR_TOP, TEXT_ANCHOR_BOTTOM, TEXT_ANCHOR_LEFT, TEXT_ANCHOR_RIGHT}),
-                                        textJustify(TEXT_JUSTIFY_AUTO),
-                                        textRadialOffset(0.5f));
-//
-                                symbolLayer.setFilter(eq(literal("$type"), literal("Point")));
-                                style.addLayerAbove(symbolLayer, "expo-center-layer");
-
-
-
-
-
-                                binding.threedimenFab.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        is3denabled = !is3denabled;
-                                        if (is3denabled) {
-                                            registerSensorListener();
-                                        } else {
-                                            unregisterSensorListener();
-                                        }
-                                    }
-                                });
-
-                                binding.symbolLayerToggleFab.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        mMap.getStyle(new Style.OnStyleLoaded() {
-                                            @Override
-                                            public void onStyleLoaded(@NonNull Style style) {
-                                                Layer layer = style.getLayer("expo-center-pois");
-                                                if (layer != null) {
-                                                    if (VISIBLE.equals(layer.getVisibility().getValue())) {
-                                                        layer.setProperties(visibility(NONE));
-                                                    } else {
-                                                        layer.setProperties(visibility(VISIBLE));
-                                                    }
-                                                }
-                                            }
-                                        });
-                                    }
-                                });
-                            } catch (URISyntaxException exception) {
-                                exception.printStackTrace();
-                            }
-                        }
-                    });
+                    model.setMapTypeSelected(mapStyle);
+                    model.setHallsVisible(hallsVisible);
+                    model.setStallsVisible(stallsVisible);
+                    model.setThreeDimenViewEnable(threeDimenViewEnable);
                 }
             });
+        }
+    }
+
+
+    private void setupMainLayer(Style style) {
+
+        // Map is set up and the style has loaded. Now you can add data or make other map adjustments
+        try {
+            style.addSource(new GeoJsonSource(MapInConstants.EXPO_CENTER_MAIN_LAYER_SOURCE, new URI("asset://ground_indoor.geojson")));
+
+            FillExtrusionLayer fillExtrusionLayer = new FillExtrusionLayer(
+                    MapInConstants.EXPO_CENTER_MAIN_LAYER, MapInConstants.EXPO_CENTER_MAIN_LAYER_SOURCE).withProperties(
+                    fillExtrusionColor(rgba(get("red"), get("green"), get("blue"), get("alpha"))),
+                    fillExtrusionHeight(get("height")),
+                    fillExtrusionOpacity(0.5f)
+            );
+            style.addLayer(fillExtrusionLayer);
+
+        } catch (URISyntaxException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    private void setUpHallLayer(Style style) {
+        try {
+
+            if (hallsLayer == null) {
+                style.addSource(new GeoJsonSource(MapInConstants.EXPO_CENTER_HALLS_POIS_LAYER_SOURCE, new URI("asset://ground_indoor_halls.geojson")));
+                hallsLayer = new SymbolLayer(MapInConstants.EXPO_CENTER_HALLS_POIS_LAYER, MapInConstants.EXPO_CENTER_HALLS_POIS_LAYER_SOURCE);
+                int color;
+                if (model.getMapTypeSelected().getValue() == MapInConstants.MAPBOX_DARK)
+                    color = Color.WHITE;
+                else
+                    color = Color.BLACK;
+
+                hallsLayer.setProperties(textColor(color),
+                        textField(get("Name")),
+                        textSize(14.0f),
+                        textVariableAnchor(
+                                new String[]{TEXT_ANCHOR_TOP, TEXT_ANCHOR_BOTTOM, TEXT_ANCHOR_LEFT, TEXT_ANCHOR_RIGHT}),
+                        textJustify(TEXT_JUSTIFY_AUTO),
+                        textRadialOffset(0.5f));
+//
+//            symbolLayer.setFilter(eq(literal("$type"), literal("Point")));
+                style.addLayerAbove(hallsLayer, MapInConstants.EXPO_CENTER_MAIN_LAYER);
+
+            }
+
+        } catch (URISyntaxException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+
+    private void setUpStallLayer(Style style) {
+        try {
+
+            if (stallsLayer == null) {
+                style.addSource(new GeoJsonSource(MapInConstants.EXPO_CENTER_STALLS_POIS_LAYER_SOURCE, new URI("asset://ground_indoor_stalls.geojson")));
+                stallsLayer = new SymbolLayer(MapInConstants.EXPO_CENTER_STALLS_POIS_LAYER, MapInConstants.EXPO_CENTER_STALLS_POIS_LAYER_SOURCE);
+                int color;
+                if (model.getMapTypeSelected().getValue() == MapInConstants.MAPBOX_DARK)
+                    color = Color.WHITE;
+                else
+                    color = Color.BLACK;
+                stallsLayer.setProperties(textColor(color),
+                        textField(get("Name")),
+                        textSize(10.0f),
+                        textVariableAnchor(
+                                new String[]{TEXT_ANCHOR_TOP, TEXT_ANCHOR_BOTTOM, TEXT_ANCHOR_LEFT, TEXT_ANCHOR_RIGHT}),
+                        textJustify(TEXT_JUSTIFY_AUTO),
+                        textRadialOffset(0.5f));
+//
+//            symbolLayer.setFilter(eq(literal("$type"), literal("Point")));
+                style.addLayerAbove(stallsLayer, MapInConstants.EXPO_CENTER_MAIN_LAYER);
+
+            }
+
+        } catch (URISyntaxException exception) {
+            exception.printStackTrace();
         }
     }
 

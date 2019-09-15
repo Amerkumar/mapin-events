@@ -30,4 +30,14 @@
     <string name="notification_annoucement_key">notification_annoucements</string>
     <string name="version">1.0.0</string>
 
+
+    <string name="mapbox_street">1</string>
+    <string name="mapbox_light">2</string>
+    <string name="mapbox_dark">3</string>
+
+    <string name="labels_halls">true</string>
+    <string name="labels_stalls">false</string>
+
+    <string name="three_dimen_view">true</string>
+    <string name="map_style">map_style</string>
 </resources>
