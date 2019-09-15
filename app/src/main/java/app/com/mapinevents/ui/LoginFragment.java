@@ -170,7 +170,7 @@ public class LoginFragment extends Fragment {
                 binding.googleSignInButton.setEnabled(true);
                 binding.facebookSignInButton.setEnabled(true);
 
-                Snackbar.make(binding.getRoot(), e.getStatusCode(), Snackbar.LENGTH_LONG).show();
+                Snackbar.make(binding.getRoot(), "Unable to login", Snackbar.LENGTH_LONG).show();
 
 
             } catch (Exception e) {
@@ -195,7 +195,7 @@ public class LoginFragment extends Fragment {
                         } else {
                             // If sign in fails, display a message to the user.
 //                            Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            Snackbar.make(binding.getRoot(), task.getException().getMessage(), Snackbar.LENGTH_SHORT)
+                            Snackbar.make(binding.getRoot(), "Unable to login", Snackbar.LENGTH_SHORT)
                                     .show();
 
                             binding.googleSignInButton.setEnabled(true);
