@@ -35,9 +35,9 @@
     <string name="mapbox_light">2</string>
     <string name="mapbox_dark">3</string>
 
-    <string name="labels_halls">true</string>
-    <string name="labels_stalls">false</string>
+    <string name="labels_halls">labels_halls</string>
+    <string name="labels_stalls">labels_stalls</string>
 
-    <string name="three_dimen_view">true</string>
+    <string name="three_dimen_view">three_dimen_view</string>
     <string name="map_style">map_style</string>
 </resources>

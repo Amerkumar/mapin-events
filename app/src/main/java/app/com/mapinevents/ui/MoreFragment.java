@@ -2,6 +2,8 @@ package app.com.mapinevents.ui;
 
 import androidx.lifecycle.ViewModelProviders;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -45,28 +47,33 @@ public class MoreFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(MoreViewModel.class);
         // TODO: Use the ViewModel
-        binding.infoContainer.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_moreFragment_to_infoFragment));
+//        binding.infoContainer.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_moreFragment_to_infoFragment));
         binding.settingsContainer.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_moreFragment_to_settingsFragment));
         binding.feedbackContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                if (user.getDisplayName() != null)
-                    Instabug.identifyUser(user.getDisplayName(), user.getEmail());
-                if (SingletonAppClass.getInstance().getInstabug() == null) {
-                    try {
-                        new Instabug.Builder(getActivity().getApplication(), "375042d402641872c2af38bf6d9c93b8")
-                                .setInvocationEvents(InstabugInvocationEvent.SHAKE)
-                                .build();
-                        Instabug.show();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+//                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+//                if (user.getDisplayName() != null)
+//                    Instabug.identifyUser(user.getDisplayName(), user.getEmail());
+//                if (SingletonAppClass.getInstance().getInstabug() == null) {
+//                    try {
+//                        new Instabug.Builder(getActivity().getApplication(), "375042d402641872c2af38bf6d9c93b8")
+//                                .setInvocationEvents(InstabugInvocationEvent.SHAKE)
+//                                .build();
+//                        Instabug.show();
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                } else {
+//                    Instabug.show();
+//                }
+//                Instabug.show();
 
-                } else {
-                    Instabug.show();
-                }
-                Instabug.show();
+                String url = "https://mapin.page.link/feedback-google-form";
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
 
             }
         });

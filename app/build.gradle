@@ -9,13 +9,13 @@ android {
         applicationId "app.com.mapinevents"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 2
-        versionName "1.0"
+        versionCode 3
+        versionName "ITS.TIME.1.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -43,6 +43,12 @@ dependencies {
     implementation "androidx.navigation:navigation-ui:$nav_version"
 
     implementation 'com.instabug.library:instabug:8.6.3'
+
+    implementation 'com.indooratlas.android:indooratlas-android-sdk:3.0.3'
+
+
+    // google location services
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
 
 
     // material design library
@@ -85,9 +91,6 @@ dependencies {
     implementation 'com.afollestad.material-dialogs:core:3.1.1'
 
     implementation 'com.afollestad.material-dialogs:lifecycle:3.1.1'
-
-
-
 
 
     testImplementation 'junit:junit:4.12'

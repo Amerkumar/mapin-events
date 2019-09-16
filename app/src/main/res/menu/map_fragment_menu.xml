@@ -5,6 +5,8 @@
         android:id="@+id/m_search"
         android:icon="@drawable/ic_search_24dp"
         android:title="@string/search_the_map"
-        app:showAsAction="ifRoom|collapseActionView" />
+        app:showAsAction="ifRoom|collapseActionView"
+        android:actionLayout="@layout/search_view_layout"
+        />
 
 </menu>

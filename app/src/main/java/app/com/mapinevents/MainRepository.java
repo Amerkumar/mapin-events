@@ -30,6 +30,7 @@ import java.util.Map;
 
 import app.com.mapinevents.model.Agenda;
 import app.com.mapinevents.model.Annoucement;
+import app.com.mapinevents.model.POI;
 import app.com.mapinevents.model.Schedule;
 
 
@@ -109,6 +110,39 @@ public class MainRepository {
                 });
 
         return agendaList;
+    }
+
+    public LiveData<List<POI>> getPoiItems() {
+        String path = "mapin_events/" + VENUE_ID + "/pois";
+        final MutableLiveData<List<POI>> poiList = new MutableLiveData<>();
+        poiList.setValue(null);
+        mFirestoreDb.collection(path)
+                .orderBy("name", Query.Direction.ASCENDING)
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot value,
+                                        @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Log.w(TAG, "Listen failed.", e);
+                            return;
+                        }
+
+
+                        List<POI> pois = new ArrayList<>();
+                        int rank = 1;
+                        for (QueryDocumentSnapshot doc : value) {
+                            if (doc.get("name") != null) {
+                                POI poi = doc.toObject(POI.class);
+                                poi.setRank(rank++);
+                                poi.setId(doc.getId());
+                                pois.add(poi);
+                            }
+                        }
+                        poiList.postValue(pois);
+                    }
+                });
+
+        return poiList;
     }
 
 

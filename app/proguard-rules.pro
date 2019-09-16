@@ -19,3 +19,32 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+#-dontshrink
+#-dontoptimize
+#-dontpreverify
+
+-keep class com.indooratlas.** { *; }
+
+-keep public class * implements com.bumptech.glide.module.GlideModule
+-keep public class * extends com.bumptech.glide.module.AppGlideModule
+-keep public enum com.bumptech.glide.load.ImageHeaderParser$** {
+  **[] $VALUES;
+  public *;
+}
+
+#-dontwarn com.bumptech.glide.load.resource.bitmap.VideoDecoder
+
+-dontwarn com.bumptech.glide.load.**
+
+
+
+-keep class app.com.mapinevents.** { *; }
+-keep class com.google.firebase.auth.**{ *; }
+
+-keep class com.algolia.instantsearch.** { *; }
+-keep class com.bumptech.glide.** { *; }
+
+
+
+# for DexGuard only
+#-keepresourcexmlelements manifest/application/meta-data@value=GlideModule

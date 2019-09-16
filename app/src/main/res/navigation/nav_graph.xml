@@ -48,7 +48,11 @@
         android:id="@+id/mapInFragment"
         android:name="app.com.mapinevents.ui.MapInFragment"
         android:label="Map"
-        tools:layout="@layout/map_in_fragment" />
+        tools:layout="@layout/map_in_fragment" >
+        <action
+            android:id="@+id/action_mapInFragment_to_mapInSelectionFragment"
+            app:destination="@id/mapInSelectionFragment" />
+    </fragment>
     <fragment
         android:id="@+id/moreFragment"
         android:name="app.com.mapinevents.ui.MoreFragment"
@@ -92,4 +96,22 @@
         android:name="app.com.mapinevents.ui.InfoFragment"
         android:label="Info"
         tools:layout="@layout/info_fragment" />
+    <fragment
+        android:id="@+id/mapInSelectionFragment"
+        android:name="app.com.mapinevents.ui.MapInSelectionFragment"
+        tools:layout="@layout/map_in_selection_fragment">
+        <argument
+            android:name="Poi"
+            app:argType="app.com.mapinevents.model.POI" />
+        <action
+            android:id="@+id/action_mapInSelectionFragment_to_mapInNavigationFragment"
+            app:destination="@id/mapInNavigationFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mapInNavigationFragment"
+        android:name="app.com.mapinevents.ui.MapInNavigationFragment">
+        <argument
+            android:name="Poi"
+            app:argType="app.com.mapinevents.model.POI" />
+    </fragment>
 </navigation>

@@ -1,6 +1,9 @@
 package app.com.mapinevents.ui;
 
+import android.content.Context;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -8,6 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
@@ -16,6 +21,8 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.indooratlas.android.sdk.IALocation;
+import com.indooratlas.android.sdk.IALocationManager;
 import com.instabug.library.Instabug;
 import com.instabug.library.invocation.InstabugInvocationEvent;
 
@@ -26,6 +33,7 @@ import java.util.Set;
 import app.com.mapinevents.R;
 import app.com.mapinevents.SingletonAppClass;
 import app.com.mapinevents.utils.Utils;
+import app.com.mapinevents.viewmodels.SharedViewModel;
 
 import static android.view.View.GONE;
 
@@ -38,12 +46,16 @@ public class MainActivity extends AppCompatActivity implements
     private Toolbar toolbar;
     private NavController navController;
     private ProgressBar progressBar;
+    private AppBarLayout appbar;
+    private IALocationManager mIALocationManager;
+    private SharedViewModel model;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
 
 
@@ -58,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements
         ));
 
 
+        appbar = findViewById(R.id.appBar);
         toolbar = findViewById(R.id.toolbar);
         progressBar = findViewById(R.id.progress_horizontal);
         bottomNavigationView = findViewById(R.id.bottom_nav);
@@ -82,7 +95,22 @@ public class MainActivity extends AppCompatActivity implements
             e.printStackTrace();
         }
 
+
+
+        model = ViewModelProviders.of(MainActivity.this).get(SharedViewModel.class);
+
+        IndoorLocationListener.getInstance(MainActivity.this).observe(this, new Observer<IALocation>() {
+            @Override
+            public void onChanged(IALocation iaLocation) {
+                Log.d("MainActivity", String.valueOf(iaLocation.getAccuracy()));
+                model.setIALocationMutableLiveData(iaLocation);
+            }
+        });
+
     }
+
+
+
 
     @Override
     public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, @Nullable Bundle arguments) {
@@ -94,6 +122,14 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.mapInFragment:
                 Utils.showView(bottomNavigationView);
                 break;
+            case R.id.mapInSelectionFragment:
+                Utils.showView(appbar);
+                Utils.hideView(bottomNavigationView);
+                break;
+            case R.id.mapInNavigationFragment:
+                Utils.hideView(bottomNavigationView);
+                Utils.hideView(appbar);
+                break;
             case R.id.scheduleDetailFragment:
                 Utils.hideView(bottomNavigationView);
                 break;
@@ -103,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements
                 Utils.hideView(bottomNavigationView);
                 break;
             default:
-//                Utils.showView(appbar);
+                Utils.showView(appbar);
                 Utils.showView(bottomNavigationView);
                 break;
         }

@@ -3,7 +3,7 @@
     android:opacity="opaque"> <!-- android:opacity="opaque" should be here -->
     <item>
         <!--this is your background, you can use color, gradient etc.-->
-        <color android:color="@android:color/white"/>
+        <color android:color="@color/mapinBlue"/>
         <shape>
               <gradient
                    android:angle="315"

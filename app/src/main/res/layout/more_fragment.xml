@@ -9,40 +9,40 @@
         android:orientation="vertical"
         tools:context=".ui.MoreFragment">
 
-        <LinearLayout
-            android:id="@+id/info_container"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="?selectableItemBackground"
-            android:clickable="true"
-            android:gravity="center_vertical"
-            android:minHeight="@dimen/spacing_xxlarge"
-            android:orientation="horizontal"
-            android:paddingLeft="@dimen/spacing_large"
-            android:paddingRight="@dimen/spacing_large">
+        <!--<LinearLayout-->
+            <!--android:id="@+id/info_container"-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:background="?selectableItemBackground"-->
+            <!--android:clickable="true"-->
+            <!--android:gravity="center_vertical"-->
+            <!--android:minHeight="@dimen/spacing_xxlarge"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:paddingLeft="@dimen/spacing_large"-->
+            <!--android:paddingRight="@dimen/spacing_large">-->
 
 
-            <ImageView
-                android:id="@+id/agenda_item_image_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:layout_margin="8dp"
-                android:src="@drawable/ic_info_24dp"
-                />
+            <!--<ImageView-->
+                <!--android:id="@+id/agenda_item_image_view"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:padding="16dp"-->
+                <!--android:layout_margin="8dp"-->
+                <!--android:src="@drawable/ic_info_24dp"-->
+                <!--/>-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Info"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@android:color/black" />
-        </LinearLayout>
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="Info"-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat.Medium"-->
+                <!--android:textColor="@android:color/black" />-->
+        <!--</LinearLayout>-->
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1.0px"
-            android:background="@android:color/darker_gray" />
+        <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="1.0px"-->
+            <!--android:background="@android:color/darker_gray" />-->
 
 
         <LinearLayout
