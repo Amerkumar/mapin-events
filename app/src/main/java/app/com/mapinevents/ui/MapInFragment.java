@@ -894,7 +894,6 @@ public class MapInFragment extends Fragment
                 });
                 mToolbar.startAnimation(animationSet);
             }
-//            mDrawerLayout.setStatusBarBackgroundColor(getThemeColor(getContext(), R.attr.colorPrimaryDark));
         }
     }
 
@@ -926,33 +925,6 @@ public class MapInFragment extends Fragment
         return filteredModelList;
     }
 
-//    private void showBlueDot(LatLng center, double accuracyRadius, double bearing) {
-//        if (mCircle == null) {
-//            // location can received before map is initialized, ignoring those updates
-//            if (mMap != null) {
-//                mCircle = mMap.addCircle(new CircleOptions()
-//                        .center(center)
-//                        .radius(accuracyRadius)
-//                        .fillColor(0x201681FB)
-//                        .strokeColor(0x500A78DD)
-//                        .zIndex(1.0f)
-//                        .visible(true)
-//                        .strokeWidth(5.0f));
-//                mMarker = mMap.addMarker(new MarkerOptions()
-//                        .position(center)
-//                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.map_blue_dot))
-//                        .anchor(0.5f, 0.5f)
-//                        .rotation((float) bearing)
-//                        .flat(true));
-//            }
-//        } else {
-//            // move existing buildingMarkers position to received location
-//            mCircle.setCenter(center);
-//            mCircle.setRadius(accuracyRadius);
-//            mMarker.setPosition(center);
-//            mMarker.setRotation((float) bearing);
-//        }
-//    }
 
     private PolygonOptions generatePerimeter(LatLng centerCoordinates, double radiusInKilometers, int numberOfSides) {
         List<LatLng> positions = new ArrayList<>();
@@ -1005,8 +977,7 @@ public class MapInFragment extends Fragment
                     new LatLng(center.getLatitude(), center.getLongitude()),
                     metersToKilometer((float) accuracyRadius),
                     64));
-            mLocationMarker.setPosition(center);
-            mLocationMarker.setIcon(icon);
+
         }
         if (mLocationMarker == null) {
             if (mMap != null) {
@@ -1014,10 +985,10 @@ public class MapInFragment extends Fragment
                         .position(center)
                         .setIcon(icon)
                 );
-            } else {
-                mLocationMarker.setPosition(center);
-//                mLocationMarker.setIcon(icon);
             }
+        }   else {
+            mLocationMarker.setPosition(center);
+//                mLocationMarker.setIcon(icon);
         }
     }
 

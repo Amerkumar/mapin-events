@@ -1,7 +1,5 @@
 package app.com.mapinevents.ui;
 
-import android.content.Context;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,10 +19,9 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.FirebaseApp;
 import com.indooratlas.android.sdk.IALocation;
 import com.indooratlas.android.sdk.IALocationManager;
-import com.instabug.library.Instabug;
-import com.instabug.library.invocation.InstabugInvocationEvent;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -57,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
 
 
-
+        FirebaseApp.initializeApp(getApplicationContext());
 
 
         Set<Integer> topLevelDestinationsSet = new HashSet<>(Arrays.asList(
@@ -85,16 +82,15 @@ public class MainActivity extends AppCompatActivity implements
         navController.addOnDestinationChangedListener(this);
 
         SingletonAppClass.getInstance().setFIRST_APP_OPEN(true);
-        try {
-            Instabug instabug = new Instabug.Builder(getApplication(), "375042d402641872c2af38bf6d9c93b8")
-                    .setInvocationEvents(InstabugInvocationEvent.SHAKE)
-                    .build();
-            SingletonAppClass.getInstance().setInstabug(instabug);
-
-        }  catch (Exception e) {
-            e.printStackTrace();
-        }
-
+//        try {
+//            Instabug instabug = new Instabug.Builder(getApplication(), "375042d402641872c2af38bf6d9c93b8")
+//                    .setInvocationEvents(InstabugInvocationEvent.SHAKE)
+//                    .build();
+//            SingletonAppClass.getInstance().setInstabug(instabug);
+//
+//        }  catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
 
         model = ViewModelProviders.of(MainActivity.this).get(SharedViewModel.class);
@@ -107,9 +103,8 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
+        mIALocationManager = IALocationManager.create(getApplicationContext());
     }
-
-
 
 
     @Override
@@ -158,6 +153,11 @@ public class MainActivity extends AppCompatActivity implements
         super.onBackPressed();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mIALocationManager.destroy();
+    }
 
     public void showProgressBar() {
         progressBar.setVisibility(View.VISIBLE);

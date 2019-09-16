@@ -56,4 +56,6 @@ public class IndoorLocationListener extends LiveData<IALocation> {
 
 //        mIALocationManager.removeLocationUpdates(mIALocationListener);
     }
+
+
 }

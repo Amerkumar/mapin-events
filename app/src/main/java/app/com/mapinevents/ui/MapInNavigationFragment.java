@@ -22,6 +22,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 import com.indooratlas.android.sdk.IALocation;
+import com.indooratlas.android.sdk.IALocationManager;
 import com.indooratlas.android.sdk.IARoute;
 import com.indooratlas.android.sdk.IAWayfindingListener;
 import com.indooratlas.android.sdk.IAWayfindingRequest;
@@ -31,7 +32,10 @@ import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.annotations.Polygon;
 import com.mapbox.mapboxsdk.annotations.PolygonOptions;
+import com.mapbox.mapboxsdk.annotations.Polyline;
+import com.mapbox.mapboxsdk.annotations.PolylineOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
+import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.MapboxMapOptions;
@@ -46,12 +50,14 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import app.com.mapinevents.R;
 import app.com.mapinevents.databinding.MapInNavigationFragmentBinding;
 import app.com.mapinevents.databinding.MapInSelectionFragmentBinding;
 import app.com.mapinevents.model.POI;
 import app.com.mapinevents.utils.MapInConstants;
+import app.com.mapinevents.utils.Utils;
 import app.com.mapinevents.viewmodels.SharedViewModel;
 
 import static com.mapbox.mapboxsdk.style.expressions.Expression.get;
@@ -83,36 +89,52 @@ public class MapInNavigationFragment extends Fragment {
     private MapInNavigationViewModel mViewModel;
     private Polygon mCirclePolygon;
     private Marker mLocationMarker;
-//    private IAWayfindingRequest mWayFindingDestination;
+    private IAWayfindingRequest mWayFindingDestination;
+    private IARoute mCurrentRoute;
 
-//    private IAWayfindingListener mWayFindingListener = new IAWayfindingListener() {
-//        @Override
-//        public void onWayfindingUpdate(IARoute iaRoute) {
-//            mCurrentRoute = iaRoute;
-//            if (hasArrivedToDestination(iaRoute)) {
-//                mCurrentRoute = null;
-//                mWayFindingDestination = null;
-//                mIALocationManager.removeWayfindingUpdates();
-//                mDestinationMarker.remove();
-//                new MaterialAlertDialogBuilder(getContext())
-//                        .setTitle("You have reached your destination.")
-//                        .setMessage("Thankyou for using MapIn.")
-//                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialog, int which) {
-//                                Navigation.findNavController(mFragmentIndoorNavigationBinding.getRoot()).popBackStack(R.id.mapInFragment, false);
-//                            }
-//                        })
-//                        .setCancelable(false)
-//                        .show();
-//            }
-//            updateRouteVisualization();
-//        }
-//    };
+
+    private IAWayfindingListener mWayFindingListener = new IAWayfindingListener() {
+        @Override
+        public void onWayfindingUpdate(IARoute iaRoute) {
+            mCurrentRoute = iaRoute;
+            if (hasArrivedToDestination(iaRoute)) {
+                mCurrentRoute = null;
+                mWayFindingDestination = null;
+                mIALocationManager.removeWayfindingUpdates();
+                mDestinationMarker.remove();
+                new MaterialAlertDialogBuilder(getContext())
+                        .setTitle("You have reached your destination.")
+                        .setMessage("Thankyou for using MapIn.")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Navigation.findNavController(binding.getRoot()).popBackStack(R.id.mapInFragment, false);
+                            }
+                        })
+                        .setCancelable(false)
+                        .show();
+            }
+            updateRouteVisualization();
+        }
+    };
+    private IALocationManager mIALocationManager;
+    private Marker mDestinationMarker;
+    private int mFloor;
+    private List<Polyline> mPolylines = new ArrayList<>();
+    private Marker mHeadingMarker;
+    private LatLng center;
 
 
     public static MapInNavigationFragment newInstance() {
         return new MapInNavigationFragment();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mIALocationManager = IALocationManager.create(getContext());
+        mIALocationManager.lockIndoors(true);
+
     }
 
     @Override
@@ -196,25 +218,44 @@ public class MapInNavigationFragment extends Fragment {
         mViewModel = ViewModelProviders.of(this).get(MapInNavigationViewModel.class);
         model = ViewModelProviders.of(getActivity()).get(SharedViewModel.class);
 
+
         model.getIaLocationMutableLiveData().observe(this, new Observer<IALocation>() {
             @Override
             public void onChanged(IALocation iaLocation) {
 
-                showBlueDot(new LatLng(iaLocation.getLatitude(), iaLocation.getLongitude()), iaLocation.getAccuracy(),
-                        iaLocation.getBearing());
+                // location received before map is intialized
+                if (mMap == null) {
+                    return;
+                }
+
+                center = new LatLng(iaLocation.getLatitude(), iaLocation.getLongitude());
+
+                final int newFloor = iaLocation.getFloorLevel();
+
+                if (mFloor != newFloor) {
+                    updateRouteVisualization();
+                }
+
+                mFloor = newFloor;
+
+                mMap.animateCamera(CameraUpdateFactory.newLatLng(center));
+
+                showLocationCircle(center, iaLocation.getAccuracy());
+
             }
         });
         poi = MapInNavigationFragmentArgs.fromBundle(getArguments()).getPoi();
 
-//        mWayFindingDestination = new IAWayfindingRequest.Builder()
-//                .withFloor(0)
-//                .withLatitude(poi.get_geoloc().get("lat"))
-//                .withLongitude(poi.get_geoloc().get("lng"))
-//                .build();
+        mWayFindingDestination = new IAWayfindingRequest.Builder()
+                .withFloor(0)
+                .withLatitude(poi.get_geoloc().get("lat"))
+                .withLongitude(poi.get_geoloc().get("lng"))
+                .build();
 
-        Snackbar.make(binding.getRoot(), "Navigation is currently unavailable. Sorry for inconveince", Snackbar.LENGTH_INDEFINITE)
-                .setAction("Cancel", null)
-                .show();
+        mIALocationManager.requestWayfindingUpdates(mWayFindingDestination, mWayFindingListener);
+
+
+
 
         binding.indoorNavigationBottomSheet.metersTextView.setText("N/A");
         binding.indoorNavigationBottomSheet.timeTextView.setText("N/A");
@@ -245,6 +286,13 @@ public class MapInNavigationFragment extends Fragment {
                 @Override
                 public void onMapReady(@NonNull MapboxMap mapboxMap) {
                     mMap = mapboxMap;
+
+                    if (mDestinationMarker == null) {
+                        mDestinationMarker = mMap.addMarker(new MarkerOptions()
+                                .position(new LatLng(poi.get_geoloc().get("lat"), poi.get_geoloc().get("lng"))));
+                    } else {
+                        mDestinationMarker.setPosition(new LatLng(poi.get_geoloc().get("lat"), poi.get_geoloc().get("lng")));
+                    }
                     int integer = model.getMapTypeSelected().getValue();
                     switch (integer) {
                         case MapInConstants.MAPBOX_STREET:
@@ -367,10 +415,7 @@ public class MapInNavigationFragment extends Fragment {
     }
 
 
-    private void showBlueDot(LatLng center, double accuracyRadius, double bearing) {
-
-        IconFactory iconFactory = IconFactory.getInstance(getActivity());
-        Icon icon = iconFactory.fromResource(R.drawable.circle_cropped);
+    private void showLocationCircle(LatLng center, double accuracyRadius) {
 
 
         if (mCirclePolygon == null) {
@@ -388,19 +433,23 @@ public class MapInNavigationFragment extends Fragment {
                     new LatLng(center.getLatitude(), center.getLongitude()),
                     metersToKilometer((float) accuracyRadius),
                     64));
-            mLocationMarker.setPosition(center);
-            mLocationMarker.setIcon(icon);
         }
-        if (mLocationMarker == null) {
+
+
+        IconFactory iconFactory = IconFactory.getInstance(getActivity());
+        Icon icon = iconFactory.fromResource(R.drawable.circle_cropped);
+
+        if (mHeadingMarker == null) {
+            // location can received before map is initialized, ignoring those updates
             if (mMap != null) {
-                mLocationMarker = mMap.addMarker(new MarkerOptions()
+                mHeadingMarker = mMap.addMarker(new MarkerOptions()
                         .position(center)
-                        .setIcon(icon)
-                );
-            } else {
-                mLocationMarker.setPosition(center);
-//                mLocationMarker.setIcon(icon);
+                        .icon(icon));
             }
+        } else {
+            // move existing markers position to received location
+            mHeadingMarker.setPosition(center);
+            mHeadingMarker.setIcon(icon);
         }
     }
 
@@ -434,4 +483,93 @@ public class MapInNavigationFragment extends Fragment {
     private float metersToKilometer(float accuracyInMeters) {
         return (float) (accuracyInMeters * 0.001);
     }
+
+    private boolean hasArrivedToDestination(IARoute route) {
+        // empty routes are only returned when there is a problem, for example,
+        // missing or disconnected routing graph
+        if (route.getLegs().size() == 0) {
+            return false;
+        }
+
+        final double FINISH_THRESHOLD_METERS = 8.0;
+        double routeLength = 0;
+        for (IARoute.Leg leg : route.getLegs()) routeLength += leg.getLength();
+        return routeLength < FINISH_THRESHOLD_METERS;
+    }
+
+    /**
+     * Clear the visualizations for the wayfinding paths
+     */
+    private void clearRouteVisualization() {
+        for (Polyline pl : mPolylines) {
+            pl.remove();
+        }
+        mPolylines.clear();
+    }
+
+    /**
+     * Visualize the IndoorAtlas Wayfinding route on top of the Google Maps.
+     */
+    private void updateRouteVisualization() {
+
+        clearRouteVisualization();
+
+        int totalDistance = 0;
+
+        if (mCurrentRoute == null) {
+            return;
+        }
+
+        for (IARoute.Leg leg : mCurrentRoute.getLegs()) {
+
+//            if (leg.getEdgeIndex() == null) {
+//                // Legs without an edge index are, in practice, the last and first legs of the
+//                // route. They connect the destination or current location to the routing graph.
+//                // All other legs travel along the edges of the routing graph.
+//
+//                // Omitting these "artificial edges" in visualization can improve the aesthetics
+//                // of the route. Alternatively, they could be visualized with dashed lines.
+//                continue;
+//            }
+
+            PolylineOptions opt = new PolylineOptions();
+
+            opt.add(new LatLng(leg.getBegin().getLatitude(), leg.getBegin().getLongitude()));
+            opt.add(new LatLng(leg.getEnd().getLatitude(), leg.getEnd().getLongitude()));
+
+            // Here wayfinding path in different floor_num than current location is visualized in
+            // a semi-transparent color
+            if (leg.getBegin().getFloor() == mFloor && leg.getEnd().getFloor() == mFloor) {
+                opt.color(0xFF0000FF);
+            } else {
+                opt.color(0x300000FF);
+            }
+
+            totalDistance = (int) (totalDistance + leg.getLength());
+
+            mPolylines.add(mMap.addPolyline(opt));
+        }
+        if (metersToTime(totalDistance) > 60) {
+            // seconds greater than 60
+            // convert into minutes
+            long time = Math.round(Math.floor(metersToTime(totalDistance) / 60));
+            binding.indoorNavigationBottomSheet.timeTextView.setText(String.format("%d min", time));
+        } else { // seconds less than 60
+            binding.indoorNavigationBottomSheet.timeTextView.setText(String.format("%s sec", metersToTime(totalDistance)));
+        }
+
+        binding.indoorNavigationBottomSheet.metersTextView.setText(String.format("%s | %d", metersToFootsteps(totalDistance), totalDistance));
+    }
+
+    // using average stride length
+    private double metersToFootsteps(double distance) {
+        return Math.round(distance / 0.762);
+    }
+
+    // using average speed
+    // return time in seconds
+    private double  metersToTime(double distance) {
+        return Math.round(distance / 1.4); }
+
 }
+
