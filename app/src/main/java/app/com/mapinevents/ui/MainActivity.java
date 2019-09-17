@@ -156,7 +156,8 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mIALocationManager.destroy();
+        if (mIALocationManager != null)
+            mIALocationManager.destroy();
     }
 
     public void showProgressBar() {

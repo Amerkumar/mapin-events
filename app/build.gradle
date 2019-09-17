@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: "androidx.navigation.safeargs"
+apply plugin: 'io.fabric'
 
 
 android {
@@ -9,8 +10,8 @@ android {
         applicationId "app.com.mapinevents"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 3
-        versionName "ITS.TIME.1.2"
+        versionCode 4
+        versionName "ITS.TIME.1.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -46,8 +47,14 @@ dependencies {
     implementation 'com.indooratlas.android:indooratlas-android-sdk:3.0.3'
 
 
+    // google maps
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+
     // google location services
     implementation 'com.google.android.gms:play-services-location:17.0.0'
+
+    // Add dependency
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
 
 
     // material design library

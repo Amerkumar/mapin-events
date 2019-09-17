@@ -51,7 +51,7 @@ public class MainRepository {
         annoucementList.setValue(null);
         mFirestoreDb.collection(path)
                 .orderBy("timestamp", Query.Direction.DESCENDING)
-                .limit(5)
+                .limit(10)
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot value,
