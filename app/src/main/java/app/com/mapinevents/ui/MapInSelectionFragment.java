@@ -67,7 +67,7 @@ public class MapInSelectionFragment extends Fragment {
         poi = MapInSelectionFragmentArgs.fromBundle(getArguments()).getPoi();
         ((Toolbar)getActivity().findViewById(R.id.toolbar)).setTitle(poi.getName());
         binding.poiName.setText(poi.getName());
-        binding.poiNumber.setText(poi.getName());
+        binding.poiNumber.setText(poi.getNumber());
         binding.poiNavigate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
