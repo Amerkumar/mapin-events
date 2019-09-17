@@ -19,7 +19,7 @@
         />
 
     <item
-        android:id="@+id/mapInFragment"
+        android:id="@+id/mapInGoogleMapsFragment"
         android:icon="@drawable/ic_map_24dp"
         android:title="@string/map"
         />

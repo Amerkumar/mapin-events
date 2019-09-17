@@ -53,11 +53,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="?attr/actionBarSize"
-            android:layout_marginBottom="?attr/actionBarSize"
             android:visibility="gone"
             />
 
-        
+
 
         <!--<com.google.android.material.floatingactionbutton.FloatingActionButton-->
             <!--android:id="@+id/symbol_layer_toggle_fab"-->
@@ -72,7 +71,7 @@
             <!--app:tint="@android:color/white" />-->
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/light_fab"
+            android:id="@+id/my_location_fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
@@ -80,7 +79,7 @@
             android:layout_marginRight="16dp"
             android:layout_marginBottom="72dp"
             android:backgroundTint="@color/mapinBlue"
-            android:src="@drawable/ic_highlight_24dp"
+            android:src="@drawable/ic_my_location_24dp"
             app:tint="@android:color/white" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

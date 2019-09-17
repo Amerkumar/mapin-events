@@ -48,6 +48,15 @@
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/mapinBlue" />
 
+
+        <!-- Google Maps API Key -->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBscJf0wmeRDOls-IY95ODAgOKhWQZT4dI" />
+
         <meta-data
             android:name="com.indooratlas.android.sdk.API_KEY"
             android:value="07c4a190-270a-4407-ab37-e9244f51b93b"/>

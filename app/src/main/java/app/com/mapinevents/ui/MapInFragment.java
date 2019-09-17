@@ -351,9 +351,12 @@ public class MapInFragment extends Fragment
 
         POIAdapter poiAdapter = new POIAdapter(getContext(), POI.class, COMPARATOR_POI, poi -> {
             Utils.hideKeyboard(getActivity());
-            MapInFragmentDirections.ActionMapInFragmentToMapInSelectionFragment actionMapInFragmentToMapInSelectionFragment =
-                    MapInFragmentDirections.actionMapInFragmentToMapInSelectionFragment(poi);
-            Navigation.findNavController(binding.getRoot()).navigate(actionMapInFragmentToMapInSelectionFragment);
+//            MapInFragmentDirections.ActionMapInFragmentToMapInSelectionFragment actionMapInFragmentToMapInSelectionFragment =
+//                    MapInFragmentDirections.actionMapInFragmentToMapInSelectionFragment(poi);
+//            Navigation.findNavController(binding.getRoot()).navigate(actionMapInFragmentToMapInSelectionFragment);
+            MapInGoogleMapsFragmentDirections.ActionMapInGoogleMapsFragmentToMapInSelectionFragment actionMapInGoogleMapsFragmentToMapInSelectionFragment =
+                    MapInGoogleMapsFragmentDirections.actionMapInGoogleMapsFragmentToMapInSelectionFragment(poi);
+            Navigation.findNavController(binding.getRoot()).navigate(actionMapInGoogleMapsFragmentToMapInSelectionFragment);
         });
 
         binding.poiRecyclerView.setAdapter(poiAdapter);

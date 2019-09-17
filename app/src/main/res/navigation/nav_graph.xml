@@ -16,7 +16,7 @@
             app:destination="@id/loginFragment" />
         <action
             android:id="@+id/action_homeFragment_to_mapInFragment"
-            app:destination="@id/mapInFragment" />
+            app:destination="@+id/mapInGoogleMapsFragment" />
     </fragment>
     <fragment
         android:id="@+id/scheduleFragment"
@@ -37,9 +37,6 @@
         android:name="app.com.mapinevents.ui.ScheduleDetailFragment"
         android:label="schedule_detail_fragment"
         tools:layout="@layout/schedule_detail_fragment" >
-        <action
-            android:id="@+id/action_scheduleDetailFragment_to_mapInFragment"
-            app:destination="@id/mapInFragment" />
         <argument
             android:name="scheduleModel"
             app:argType="app.com.mapinevents.model.Schedule" />
@@ -48,11 +45,7 @@
         android:id="@+id/mapInFragment"
         android:name="app.com.mapinevents.ui.MapInFragment"
         android:label="Map"
-        tools:layout="@layout/map_in_fragment" >
-        <action
-            android:id="@+id/action_mapInFragment_to_mapInSelectionFragment"
-            app:destination="@id/mapInSelectionFragment" />
-    </fragment>
+        tools:layout="@layout/map_in_fragment" />
     <fragment
         android:id="@+id/moreFragment"
         android:name="app.com.mapinevents.ui.MoreFragment"
@@ -113,5 +106,12 @@
         <argument
             android:name="Poi"
             app:argType="app.com.mapinevents.model.POI" />
+    </fragment>
+    <fragment
+        android:id="@+id/mapInGoogleMapsFragment"
+        android:name="app.com.mapinevents.ui.MapInGoogleMapsFragment">
+        <action
+            android:id="@+id/action_mapInGoogleMapsFragment_to_mapInSelectionFragment"
+            app:destination="@id/mapInSelectionFragment" />
     </fragment>
 </navigation>

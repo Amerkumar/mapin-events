@@ -1,7 +1,9 @@
 package app.com.mapinevents.ui;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,38 +20,38 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.maps.android.data.geojson.GeoJsonLayer;
 import com.indooratlas.android.sdk.IALocation;
 import com.indooratlas.android.sdk.IALocationManager;
+import com.indooratlas.android.sdk.IAOrientationListener;
+import com.indooratlas.android.sdk.IAOrientationRequest;
+import com.indooratlas.android.sdk.IARegion;
 import com.indooratlas.android.sdk.IARoute;
 import com.indooratlas.android.sdk.IAWayfindingListener;
 import com.indooratlas.android.sdk.IAWayfindingRequest;
-import com.mapbox.mapboxsdk.annotations.Icon;
-import com.mapbox.mapboxsdk.annotations.IconFactory;
-import com.mapbox.mapboxsdk.annotations.Marker;
-import com.mapbox.mapboxsdk.annotations.MarkerOptions;
-import com.mapbox.mapboxsdk.annotations.Polygon;
-import com.mapbox.mapboxsdk.annotations.PolygonOptions;
-import com.mapbox.mapboxsdk.annotations.Polyline;
-import com.mapbox.mapboxsdk.annotations.PolylineOptions;
-import com.mapbox.mapboxsdk.camera.CameraPosition;
-import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
-import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.mapbox.mapboxsdk.maps.MapboxMap;
-import com.mapbox.mapboxsdk.maps.MapboxMapOptions;
-import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
-import com.mapbox.mapboxsdk.maps.Style;
-import com.mapbox.mapboxsdk.maps.SupportMapFragment;
-import com.mapbox.mapboxsdk.style.layers.FillExtrusionLayer;
-import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
-import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Vector;
 
 import app.com.mapinevents.R;
@@ -60,37 +62,33 @@ import app.com.mapinevents.utils.MapInConstants;
 import app.com.mapinevents.utils.Utils;
 import app.com.mapinevents.viewmodels.SharedViewModel;
 
-import static com.mapbox.mapboxsdk.style.expressions.Expression.get;
-import static com.mapbox.mapboxsdk.style.expressions.Expression.rgba;
-import static com.mapbox.mapboxsdk.style.layers.Property.TEXT_ANCHOR_BOTTOM;
-import static com.mapbox.mapboxsdk.style.layers.Property.TEXT_ANCHOR_LEFT;
-import static com.mapbox.mapboxsdk.style.layers.Property.TEXT_ANCHOR_RIGHT;
-import static com.mapbox.mapboxsdk.style.layers.Property.TEXT_ANCHOR_TOP;
-import static com.mapbox.mapboxsdk.style.layers.Property.TEXT_JUSTIFY_AUTO;
-import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.fillExtrusionColor;
-import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.fillExtrusionHeight;
-import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.fillExtrusionOpacity;
-import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.textColor;
-import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.textField;
-import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.textJustify;
-import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.textRadialOffset;
-import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.textSize;
-import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.textVariableAnchor;
-
 public class MapInNavigationFragment extends Fragment {
 
-    private SupportMapFragment mapFragment;
-    private MapboxMap mMap;
     private SharedViewModel model;
-    private SymbolLayer hallsLayer;
-    private SymbolLayer stallsLayer;
     private POI poi;
     private MapInNavigationFragmentBinding binding;
     private MapInNavigationViewModel mViewModel;
-    private Polygon mCirclePolygon;
-    private Marker mLocationMarker;
     private IAWayfindingRequest mWayFindingDestination;
     private IARoute mCurrentRoute;
+
+    private IAOrientationListener mOrientationListener = new IAOrientationListener() {
+        @Override
+        public void onHeadingChanged(long l, double v) {
+            updateHeading(v);
+        }
+
+        @Override
+        public void onOrientationChange(long l, double[] doubles) {
+
+        }
+    };
+    private Circle mCircle;
+
+    private void updateHeading(double heading) {
+        if (mHeadingMarker != null) {
+            mHeadingMarker.setRotation((float)heading);
+        }
+    }
 
 
     private IAWayfindingListener mWayFindingListener = new IAWayfindingListener() {
@@ -118,11 +116,12 @@ public class MapInNavigationFragment extends Fragment {
         }
     };
     private IALocationManager mIALocationManager;
-    private Marker mDestinationMarker;
     private int mFloor;
     private List<Polyline> mPolylines = new ArrayList<>();
     private Marker mHeadingMarker;
     private LatLng center;
+    private Marker mDestinationMarker;
+    private GoogleMap mMap;
 
 
     public static MapInNavigationFragment newInstance() {
@@ -133,9 +132,13 @@ public class MapInNavigationFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mIALocationManager = IALocationManager.create(getContext());
-        mIALocationManager.lockIndoors(true);
+
+        WifiManager wifiManager = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        wifiManager.setWifiEnabled(true);
 
     }
+
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -153,7 +156,7 @@ public class MapInNavigationFragment extends Fragment {
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                Navigation.findNavController(v).popBackStack(R.id.mapInFragment, false);
+                                Navigation.findNavController(v).popBackStack(R.id.mapInGoogleMapsFragment, false);
                             }
                         })
                         .setNegativeButton("No", null)
@@ -204,7 +207,19 @@ public class MapInNavigationFragment extends Fragment {
             @Override
             public void handleOnBackPressed() {
                 // Handle the back button event
-                Navigation.findNavController(binding.getRoot()).popBackStack(R.id.mapInFragment, false);
+
+                new MaterialAlertDialogBuilder(getContext(), R.style.AlertDialogTheme)
+                        .setTitle("Cancel Navigation")
+                        .setMessage("Are you sure you want to cancel navigation?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Navigation.findNavController(binding.getRoot()).popBackStack(R.id.mapInGoogleMapsFragment, false);
+                            }
+                        })
+                        .setNegativeButton("No", null)
+
+                        .show();
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
@@ -246,6 +261,27 @@ public class MapInNavigationFragment extends Fragment {
         });
         poi = MapInNavigationFragmentArgs.fromBundle(getArguments()).getPoi();
 
+        binding.indoorNavigationBottomSheet.metersTextView.setText("N/A");
+        binding.indoorNavigationBottomSheet.timeTextView.setText("N/A");
+        binding.indoorNavigationBottomSheet.navigationDetailTextView.setText("Navigating to " + poi.getName());
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onEvent(GoogleMap map) {
+        mMap = map;
+
         mWayFindingDestination = new IAWayfindingRequest.Builder()
                 .withFloor(0)
                 .withLatitude(poi.get_geoloc().get("lat"))
@@ -254,235 +290,81 @@ public class MapInNavigationFragment extends Fragment {
 
         mIALocationManager.requestWayfindingUpdates(mWayFindingDestination, mWayFindingListener);
 
-
-
-
-        binding.indoorNavigationBottomSheet.metersTextView.setText("N/A");
-        binding.indoorNavigationBottomSheet.timeTextView.setText("N/A");
-        binding.indoorNavigationBottomSheet.navigationDetailTextView.setText("Navigating to " + poi.getName());
-
-
-
-        if (savedInstanceState == null) {
-            final FragmentTransaction transaction = getActivity().getSupportFragmentManager()
-                    .beginTransaction();
-
-            MapboxMapOptions options = MapboxMapOptions.createFromAttributes(getContext(), null);
-            options.camera(new CameraPosition.Builder()
-                    .target(new LatLng(24.901317946386918, 67.07612826571307))
-                    .bearing(145)
-                    .zoom(17)
-                    .build());
-
-            mapFragment = SupportMapFragment.newInstance(options);
-
-            transaction.add(R.id.mapin_fragment_container, mapFragment, "com.mapbox.map");
-            transaction.commit();
+        if (mDestinationMarker == null) {
+            mDestinationMarker = mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(poi.get_geoloc().get("lat"), poi.get_geoloc().get("lng")))
+                    .icon(Utils.getBitmapFromVector(getContext(),
+                            R.drawable.ic_location_pin_48px_square,
+                            getResources().getColor(R.color.mapinBlue))));
         } else {
-            mapFragment = (SupportMapFragment) getActivity().getSupportFragmentManager().findFragmentByTag("com.mapbox.map");
-        }
-        if (mapFragment != null) {
-            mapFragment.getMapAsync(new OnMapReadyCallback() {
-                @Override
-                public void onMapReady(@NonNull MapboxMap mapboxMap) {
-                    mMap = mapboxMap;
-
-                    if (mDestinationMarker == null) {
-                        mDestinationMarker = mMap.addMarker(new MarkerOptions()
-                                .position(new LatLng(poi.get_geoloc().get("lat"), poi.get_geoloc().get("lng"))));
-                    } else {
-                        mDestinationMarker.setPosition(new LatLng(poi.get_geoloc().get("lat"), poi.get_geoloc().get("lng")));
-                    }
-                    int integer = model.getMapTypeSelected().getValue();
-                    switch (integer) {
-                        case MapInConstants.MAPBOX_STREET:
-                            mMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
-                                @Override
-                                public void onStyleLoaded(@NonNull Style style) {
-                                    setupMainLayer(style);
-                                }
-                            });
-                            break;
-                        case MapInConstants.MAPBOX_LIGHT:
-                            mMap.setStyle(Style.LIGHT, new Style.OnStyleLoaded() {
-                                @Override
-                                public void onStyleLoaded(@NonNull Style style) {
-                                    setupMainLayer(style);
-                                }
-                            });
-                            break;
-                        case MapInConstants.MAPBOX_DARK:
-                            mMap.setStyle(Style.DARK, new Style.OnStyleLoaded() {
-                                @Override
-                                public void onStyleLoaded(@NonNull Style style) {
-                                    setupMainLayer(style);
-                                }
-                            });
-                            break;
-
-                    }
-                    mapboxMap.getStyle(new Style.OnStyleLoaded() {
-                        @Override
-                        public void onStyleLoaded(@NonNull Style style) {
-                            boolean hall = model.getHallsVisible().getValue();
-                            setUpHallLayer(style, hall);
-                            boolean stalls = model.getStallsVisible().getValue();
-                            setUpStallLayer(style, stalls);
-                        }
-                    });
-
-                    mapboxMap.addMarker(new MarkerOptions()
-                            .position(new LatLng(poi.get_geoloc().get("lat"), poi.get_geoloc().get("lng"))));
-                }
-            });
+            mDestinationMarker.setPosition(new LatLng(poi.get_geoloc().get("lat"), poi.get_geoloc().get("lng")));
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        mIALocationManager.registerOrientationListener(
+                // update if heading changes by 1 degrees or more
+                new IAOrientationRequest(1, 0),
+                mOrientationListener);
 
-    private void setupMainLayer(Style style) {
+        if (mHeadingMarker != null && !mHeadingMarker.isVisible())
+            mHeadingMarker.setVisible(true);
 
-        // Map is set up and the style has loaded. Now you can add data or make other map adjustments
-        try {
-            style.addSource(new GeoJsonSource(MapInConstants.EXPO_CENTER_MAIN_LAYER_SOURCE, new URI("asset://ground_indoor.geojson")));
+        if (mDestinationMarker != null && !mDestinationMarker.isVisible())
+            mDestinationMarker.setVisible(true);
 
-            FillExtrusionLayer fillExtrusionLayer = new FillExtrusionLayer(
-                    MapInConstants.EXPO_CENTER_MAIN_LAYER, MapInConstants.EXPO_CENTER_MAIN_LAYER_SOURCE).withProperties(
-                    fillExtrusionColor(rgba(get("red"), get("green"), get("blue"), get("alpha"))),
-                    fillExtrusionHeight(get("height")),
-                    fillExtrusionOpacity(0.5f)
-            );
-            style.addLayer(fillExtrusionLayer);
+        if (mCircle != null && !mCircle.isVisible())
+            mCircle.setVisible(true);
 
-        } catch (URISyntaxException exception) {
-            exception.printStackTrace();
-        }
     }
 
-    private void setUpHallLayer(Style style, boolean halls) {
-        try {
-            if (halls) {
-                style.addSource(new GeoJsonSource(MapInConstants.EXPO_CENTER_HALLS_POIS_LAYER_SOURCE, new URI("asset://ground_indoor_halls.geojson")));
-                hallsLayer = new SymbolLayer(MapInConstants.EXPO_CENTER_HALLS_POIS_LAYER, MapInConstants.EXPO_CENTER_HALLS_POIS_LAYER_SOURCE);
-                int color;
-                if (model.getMapTypeSelected().getValue() == MapInConstants.MAPBOX_DARK)
-                    color = Color.WHITE;
-                else
-                    color = Color.BLACK;
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mDestinationMarker != null && mDestinationMarker.isVisible())
+            mDestinationMarker.setVisible(false);
 
-                hallsLayer.setProperties(textColor(color),
-                        textField(get("Name")),
-                        textSize(14.0f),
-                        textVariableAnchor(
-                                new String[]{TEXT_ANCHOR_TOP, TEXT_ANCHOR_BOTTOM, TEXT_ANCHOR_LEFT, TEXT_ANCHOR_RIGHT}),
-                        textJustify(TEXT_JUSTIFY_AUTO),
-                        textRadialOffset(0.5f));
-                style.addLayerAbove(hallsLayer, MapInConstants.EXPO_CENTER_MAIN_LAYER);
+        if (mCurrentRoute != null)
+            mCurrentRoute = null;
 
-            }
-        } catch (URISyntaxException exception) {
-            exception.printStackTrace();
-        }
+        if (mHeadingMarker != null && mHeadingMarker.isVisible())
+            mHeadingMarker.setVisible(false);
+        if (mCircle != null && mCircle.isVisible())
+            mCircle.setVisible(false);
+        mIALocationManager.unregisterOrientationListener(mOrientationListener);
     }
-
-
-    private void setUpStallLayer(Style style, boolean stalls) {
-        try {
-
-            if (stalls) {
-                style.addSource(new GeoJsonSource(MapInConstants.EXPO_CENTER_STALLS_POIS_LAYER_SOURCE, new URI("asset://ground_indoor_stalls.geojson")));
-                stallsLayer = new SymbolLayer(MapInConstants.EXPO_CENTER_STALLS_POIS_LAYER, MapInConstants.EXPO_CENTER_STALLS_POIS_LAYER_SOURCE);
-                int color;
-                if (model.getMapTypeSelected().getValue() == MapInConstants.MAPBOX_DARK)
-                    color = Color.WHITE;
-                else
-                    color = Color.BLACK;
-                stallsLayer.setProperties(textColor(color),
-                        textField(get("Name")),
-                        textSize(10.0f),
-                        textVariableAnchor(
-                                new String[]{TEXT_ANCHOR_TOP, TEXT_ANCHOR_BOTTOM, TEXT_ANCHOR_LEFT, TEXT_ANCHOR_RIGHT}),
-                        textJustify(TEXT_JUSTIFY_AUTO),
-                        textRadialOffset(0.5f));
-//
-//            symbolLayer.setFilter(eq(literal("$type"), literal("Point")));
-                style.addLayerAbove(stallsLayer, MapInConstants.EXPO_CENTER_MAIN_LAYER);
-
-            }
-
-        } catch (URISyntaxException exception) {
-            exception.printStackTrace();
-        }
-    }
-
 
     private void showLocationCircle(LatLng center, double accuracyRadius) {
-
-
-        if (mCirclePolygon == null) {
+        if (mCircle == null) {
             // location can received before map is initialized, ignoring those updates
             if (mMap != null) {
-                mCirclePolygon = mMap.addPolygon(generatePerimeter(
-                        new LatLng(center.getLatitude(), center.getLongitude()),
-                        metersToKilometer((float) accuracyRadius),
-                        64));
-            }
-        } else {
-            // move existing buildingMarkers position to received location
-            mCirclePolygon.remove();
-            mCirclePolygon = mMap.addPolygon(generatePerimeter(
-                    new LatLng(center.getLatitude(), center.getLongitude()),
-                    metersToKilometer((float) accuracyRadius),
-                    64));
-        }
-
-
-        IconFactory iconFactory = IconFactory.getInstance(getActivity());
-        Icon icon = iconFactory.fromResource(R.drawable.circle_cropped);
-
-        if (mHeadingMarker == null) {
-            // location can received before map is initialized, ignoring those updates
-            if (mMap != null) {
+                mCircle = mMap.addCircle(new CircleOptions()
+                        .center(center)
+                        .radius(accuracyRadius)
+                        .fillColor(0x201681FB)
+                        .strokeColor(0x500A78DD)
+                        .zIndex(1.0f)
+                        .visible(true)
+                        .strokeWidth(5.0f));
                 mHeadingMarker = mMap.addMarker(new MarkerOptions()
                         .position(center)
-                        .icon(icon));
+                        .icon(Utils.getBitmapFromVector(getContext(),
+                                R.drawable.ic_navigation_black_48dp,
+                                getResources().getColor(R.color.mapinBlue)))
+                        .anchor(0.5f, 0.5f)
+                        .flat(true));
             }
         } else {
             // move existing markers position to received location
+            mCircle.setCenter(center);
             mHeadingMarker.setPosition(center);
-            mHeadingMarker.setIcon(icon);
+            mCircle.setRadius(accuracyRadius);
         }
     }
 
 
-    private PolygonOptions generatePerimeter(LatLng centerCoordinates, double radiusInKilometers, int numberOfSides) {
-        List<LatLng> positions = new ArrayList<>();
-        double distanceX = radiusInKilometers / (111.319 * Math.cos(centerCoordinates.getLatitude() * Math.PI / 180));
-        double distanceY = radiusInKilometers / 110.574;
-
-        double slice = (2 * Math.PI) / numberOfSides;
-
-        double theta;
-        double x;
-        double y;
-        LatLng position;
-        for (int i = 0; i < numberOfSides; ++i) {
-            theta = i * slice;
-            x = distanceX * Math.cos(theta);
-            y = distanceY * Math.sin(theta);
-
-            position = new LatLng(centerCoordinates.getLatitude() + y,
-                    centerCoordinates.getLongitude() + x);
-            positions.add(position);
-        }
-        return new PolygonOptions()
-                .addAll(positions)
-                .fillColor(Color.BLUE)
-                .alpha(0.4f);
-    }
-
-    private float metersToKilometer(float accuracyInMeters) {
-        return (float) (accuracyInMeters * 0.001);
-    }
 
     private boolean hasArrivedToDestination(IARoute route) {
         // empty routes are only returned when there is a problem, for example,
