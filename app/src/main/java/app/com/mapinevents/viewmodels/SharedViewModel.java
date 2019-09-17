@@ -3,12 +3,14 @@ package app.com.mapinevents.viewmodels;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.indooratlas.android.sdk.IAExtraInfo;
 import com.indooratlas.android.sdk.IALocation;
 
 public class SharedViewModel extends ViewModel {
 
     private final MutableLiveData<Integer> mapTypeSelected = new MutableLiveData<Integer>();
     private final MutableLiveData<IALocation> iaLocationMutableLiveData = new MutableLiveData<>();
+    private final MutableLiveData<IAExtraInfo> iaExtraInfoMutableLiveData = new MutableLiveData<>();
 
     public void setHallsVisible(Boolean hallsVisible) {
         this.hallsVisible.setValue(hallsVisible);
@@ -21,7 +23,6 @@ public class SharedViewModel extends ViewModel {
     public void setThreeDimenViewEnable(Boolean threeDimenViewEnable) {
         this.threeDimenViewEnable.setValue(threeDimenViewEnable);
     }
-
 
 
 
@@ -56,5 +57,13 @@ public class SharedViewModel extends ViewModel {
 
     public void setIALocationMutableLiveData(IALocation iaLocationMutableLiveData) {
         this.iaLocationMutableLiveData.postValue(iaLocationMutableLiveData);
+    }
+
+    public MutableLiveData<IAExtraInfo> getIaExtraInfoMutableLiveData() {
+        return iaExtraInfoMutableLiveData;
+    }
+
+    public void setIaExtraInfoMutableLiveData(IAExtraInfo iaExtraInfoMutableLiveData) {
+        this.iaExtraInfoMutableLiveData.postValue(iaExtraInfoMutableLiveData);
     }
 }

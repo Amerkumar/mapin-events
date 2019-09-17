@@ -44,7 +44,7 @@
     <fragment
         android:id="@+id/mapInFragment"
         android:name="app.com.mapinevents.ui.MapInFragment"
-        android:label="Map"
+        android:label="3d Map"
         tools:layout="@layout/map_in_fragment" />
     <fragment
         android:id="@+id/moreFragment"
@@ -57,6 +57,9 @@
         <action
             android:id="@+id/action_moreFragment_to_infoFragment"
             app:destination="@id/infoFragment" />
+        <action
+            android:id="@+id/action_moreFragment_to_mapInFragment"
+            app:destination="@id/mapInFragment" />
     </fragment>
     <fragment
         android:id="@+id/loginFragment"

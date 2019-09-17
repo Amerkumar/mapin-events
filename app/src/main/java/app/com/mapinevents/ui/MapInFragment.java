@@ -192,6 +192,7 @@ public class MapInFragment extends Fragment
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             // permission granted
+
             // check for gps location services
 //            Log.d(TAG, "Location Permission Granted");
 
@@ -340,107 +341,98 @@ public class MapInFragment extends Fragment
         mViewModel = ViewModelProviders.of(this).get(MapInViewModel.class);
         model = ViewModelProviders.of(getActivity()).get(SharedViewModel.class);
 
-        model.getIaLocationMutableLiveData().observe(this, new Observer<IALocation>() {
-            @Override
-            public void onChanged(IALocation iaLocation) {
-
-                  showBlueDot(new LatLng(iaLocation.getLatitude(), iaLocation.getLongitude()), iaLocation.getAccuracy(),
-                          iaLocation.getBearing());
-            }
-        });
-
-        POIAdapter poiAdapter = new POIAdapter(getContext(), POI.class, COMPARATOR_POI, poi -> {
-            Utils.hideKeyboard(getActivity());
-//            MapInFragmentDirections.ActionMapInFragmentToMapInSelectionFragment actionMapInFragmentToMapInSelectionFragment =
-//                    MapInFragmentDirections.actionMapInFragmentToMapInSelectionFragment(poi);
-//            Navigation.findNavController(binding.getRoot()).navigate(actionMapInFragmentToMapInSelectionFragment);
-            MapInGoogleMapsFragmentDirections.ActionMapInGoogleMapsFragmentToMapInSelectionFragment actionMapInGoogleMapsFragmentToMapInSelectionFragment =
-                    MapInGoogleMapsFragmentDirections.actionMapInGoogleMapsFragmentToMapInSelectionFragment(poi);
-            Navigation.findNavController(binding.getRoot()).navigate(actionMapInGoogleMapsFragmentToMapInSelectionFragment);
-        });
-
-        binding.poiRecyclerView.setAdapter(poiAdapter);
-        binding.poiRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mViewModel.getmAgendaObservable().observe(this, new Observer<List<POI>>() {
-            @Override
-            public void onChanged(List<POI> pois) {
-                if (pois != null) {
-                    binding.progressHorizontal.setVisibility(View.GONE);
-                    poiAdapter.edit().removeAll().commit();
-                    poiAdapter.edit()
-                            .replaceAll(pois)
-                            .commit();
-                    mPoiModels = pois;
-                } else {
-                    binding.progressHorizontal.setVisibility(View.VISIBLE);
-                }
-            }
-        });
-        if (searchItem == null) {
-            binding.toolbar.inflateMenu(R.menu.mapin_fragment_search_menu);
-            searchItem = binding.toolbar.getMenu().findItem(R.id.m_search);
-            searchView = (SearchView) searchItem.getActionView();
-
-//        searchItem = binding.toolbar.getMenu().getItem(R.id.m_search);
+//        model.getIaLocationMutableLiveData().observe(this, new Observer<IALocation>() {
+//            @Override
+//            public void onChanged(IALocation iaLocation) {
 //
-            MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
-                @Override
-                public boolean onMenuItemActionCollapse(MenuItem item) {
-                    // Called when SearchView is collapsing
-//                if (mSearchItem.isActionViewExpanded()) {
-//                    animateSearchToolbar(1, false, false);
+//                  showBlueDot(new LatLng(iaLocation.getLatitude(), iaLocation.getLongitude()), iaLocation.getAccuracy(),
+//                          iaLocation.getBearing());
+//            }
+//        });
+
+
+//        binding.poiRecyclerView.setAdapter(poiAdapter);
+//        binding.poiRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+//        mViewModel.getmAgendaObservable().observe(this, new Observer<List<POI>>() {
+//            @Override
+//            public void onChanged(List<POI> pois) {
+//                if (pois != null) {
+//                    binding.progressHorizontal.setVisibility(View.GONE);
+//                    poiAdapter.edit().removeAll().commit();
+//                    poiAdapter.edit()
+//                            .replaceAll(pois)
+//                            .commit();
+//                    mPoiModels = pois;
+//                } else {
+//                    binding.progressHorizontal.setVisibility(View.VISIBLE);
 //                }
-                    if (searchItem.isActionViewExpanded()) {
-//                        animateSearchToolbar(1, false, false);
-                        binding.mapFragmentContainer.setVisibility(View.VISIBLE);
-                        Utils.showView(getActivity().findViewById(R.id.bottom_nav));
-                        binding.symbolLayerToggleFab.setVisibility(View.VISIBLE);
-                        binding.lightFab.setVisibility(View.VISIBLE);
-                        binding.poiRecyclerView.setVisibility(View.GONE);
-                    }
-                    return true;
-                }
-
-                @Override
-                public boolean onMenuItemActionExpand(MenuItem item) {
-                    // Called when SearchView is expanding
-//                animateSearchToolbar(1, true, true);
-//                    animateSearchToolbar(1, true, true);
-                    binding.mapFragmentContainer.setVisibility(View.GONE);
-                    Utils.hideView(getActivity().findViewById(R.id.bottom_nav));
-
-                    binding.symbolLayerToggleFab.setVisibility(View.GONE);
-                    binding.lightFab.setVisibility(View.GONE);
-                    binding.poiRecyclerView.setVisibility(View.VISIBLE);
-
-                    return true;
-                }
-            });
-
-
-        }
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                if (mPoiModels != null) {
-                    final List<POI> filteredModelList = filter(mPoiModels, newText);
-                    poiAdapter.edit()
-                            .replaceAll(filteredModelList)
-                            .commit();
-                    Log.d("", String.valueOf(filteredModelList.size()));
-
-
-                }
-                return false;
-            }
-        });
+//            }
+//        });
+//        if (searchItem == null) {
+//            binding.toolbar.inflateMenu(R.menu.mapin_fragment_search_menu);
+//            searchItem = binding.toolbar.getMenu().findItem(R.id.m_search);
+//            searchView = (SearchView) searchItem.getActionView();
+//
+////        searchItem = binding.toolbar.getMenu().getItem(R.id.m_search);
+////
+//            MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
+//                @Override
+//                public boolean onMenuItemActionCollapse(MenuItem item) {
+//                    // Called when SearchView is collapsing
+////                if (mSearchItem.isActionViewExpanded()) {
+////                    animateSearchToolbar(1, false, false);
+////                }
+//                    if (searchItem.isActionViewExpanded()) {
+////                        animateSearchToolbar(1, false, false);
+//                        binding.mapFragmentContainer.setVisibility(View.VISIBLE);
+//                        Utils.showView(getActivity().findViewById(R.id.bottom_nav));
+//                        binding.symbolLayerToggleFab.setVisibility(View.VISIBLE);
+//                        binding.lightFab.setVisibility(View.VISIBLE);
+//                        binding.poiRecyclerView.setVisibility(View.GONE);
+//                    }
+//                    return true;
+//                }
+//
+//                @Override
+//                public boolean onMenuItemActionExpand(MenuItem item) {
+//                    // Called when SearchView is expanding
+////                animateSearchToolbar(1, true, true);
+////                    animateSearchToolbar(1, true, true);
+//                    binding.mapFragmentContainer.setVisibility(View.GONE);
+//                    Utils.hideView(getActivity().findViewById(R.id.bottom_nav));
+//
+//                    binding.symbolLayerToggleFab.setVisibility(View.GONE);
+//                    binding.lightFab.setVisibility(View.GONE);
+//                    binding.poiRecyclerView.setVisibility(View.VISIBLE);
+//
+//                    return true;
+//                }
+//            });
+//
+//
+//        }
+//
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//                if (mPoiModels != null) {
+//                    final List<POI> filteredModelList = filter(mPoiModels, newText);
+//                    poiAdapter.edit()
+//                            .replaceAll(filteredModelList)
+//                            .commit();
+//                    Log.d("", String.valueOf(filteredModelList.size()));
+//
+//
+//                }
+//                return false;
+//            }
+//        });
 
 
         if (savedInstanceState == null) {
@@ -819,20 +811,7 @@ public class MapInFragment extends Fragment
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        getActivity().findViewById(R.id.appBar).setVisibility(View.GONE);
-    }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-
-        getActivity().findViewById(R.id.appBar).setVisibility(View.VISIBLE);
-        searchItem.collapseActionView();
-
-    }
 //
 //    public void animateSearchToolbar(int numberOfMenuIcon, boolean containsOverflow, boolean show) {
 //

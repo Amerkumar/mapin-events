@@ -69,6 +69,8 @@ public class MoreFragment extends Fragment {
 
             }
         });
+
+        binding.threedimen.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_moreFragment_to_mapInFragment));
     }
 
 }

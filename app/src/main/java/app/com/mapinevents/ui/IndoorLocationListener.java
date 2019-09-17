@@ -12,6 +12,8 @@ import com.indooratlas.android.sdk.IALocationListener;
 import com.indooratlas.android.sdk.IALocationManager;
 import com.indooratlas.android.sdk.IALocationRequest;
 
+import app.com.mapinevents.SingletonAppClass;
+
 public class IndoorLocationListener extends LiveData<IALocation> {
     private static IndoorLocationListener instance;
     private IALocationManager mIALocationManager;
@@ -25,14 +27,16 @@ public class IndoorLocationListener extends LiveData<IALocation> {
     @SuppressLint("MissingPermission")
     private IndoorLocationListener(Context context) {
         mIALocationManager = IALocationManager.create(context);
+        SingletonAppClass.getInstance().setIALocationManager(mIALocationManager);
     }
 
 
    IALocationListener mIALocationListener = new IALocationListener() {
        @Override
        public void onLocationChanged(IALocation iaLocation) {
-           if (iaLocation != null)
+           if (iaLocation != null){
                setValue(iaLocation);
+           }
        }
 
        @Override
@@ -47,14 +51,14 @@ public class IndoorLocationListener extends LiveData<IALocation> {
         super.onActive();
         Log.d("Indoor Listener", "onActive");
         mIALocationManager.requestLocationUpdates(IALocationRequest.create(), mIALocationListener);
+//        Log.d("Indoor LocationListener", IALocationManager.getExtraInfo().traceId);
     }
 
     @Override
     protected void onInactive() {
         super.onInactive();
         Log.d("Indoor Listener", "inActive");
-
-//        mIALocationManager.removeLocationUpdates(mIALocationListener);
+        mIALocationManager.removeLocationUpdates(mIALocationListener);
     }
 
 

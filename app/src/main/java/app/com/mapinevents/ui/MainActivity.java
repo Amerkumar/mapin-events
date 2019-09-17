@@ -136,6 +136,8 @@ public class MainActivity extends AppCompatActivity implements
         navController.addOnDestinationChangedListener(this);
 
         SingletonAppClass.getInstance().setFIRST_APP_OPEN(true);
+//        SingletonAppClass.getInstance().setIaExtraInfo(null);
+//        model.setIaExtraInfoMutableLiveData(null);
 
         model = ViewModelProviders.of(MainActivity.this).get(SharedViewModel.class);
 
@@ -144,11 +146,11 @@ public class MainActivity extends AppCompatActivity implements
             public void onChanged(IALocation iaLocation) {
                 Log.d("MainActivity", String.valueOf(iaLocation.getAccuracy()));
                 model.setIALocationMutableLiveData(iaLocation);
+//                model.setIaExtraInfoMutableLiveData(SingletonAppClass.getInstance().getIaLocationManager().getExtraInfo());
             }
         });
 
-        mIALocationManager = IALocationManager.create(getApplicationContext());
-        mIALocationManager.lockIndoors(true);
+        SingletonAppClass.getInstance().getIaLocationManager().lockIndoors(true);
     }
 
 
@@ -179,6 +181,11 @@ public class MainActivity extends AppCompatActivity implements
                 showMapView();
                 Utils.hideView(appbar);
                 Utils.showView(bottomNavigationView);
+                break;
+            case R.id.mapInFragment:
+                hideMapView();
+                Utils.hideView(bottomNavigationView);
+                Utils.showView(appbar);
                 break;
             case R.id.mapInSelectionFragment:
                 showMapView();
@@ -219,8 +226,9 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mIALocationManager != null)
-            mIALocationManager.destroy();
+        if (SingletonAppClass.getInstance().getIaLocationManager() != null)
+            SingletonAppClass.getInstance().getIaLocationManager().destroy();
+
     }
 
     public void showProgressBar() {

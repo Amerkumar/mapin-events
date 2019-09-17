@@ -10,8 +10,8 @@ android {
         applicationId "app.com.mapinevents"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 5
-        versionName "ITS.TIME.1.4"
+        versionCode 7
+        versionName "ITS.TIME.1.6"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

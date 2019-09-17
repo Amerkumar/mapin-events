@@ -110,19 +110,4 @@ public class MapInSelectionFragment extends Fragment {
 
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(poi.get_geoloc().get("lat"), poi.get_geoloc().get("lng")), 19.5f));
     }
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        getActivity().findViewById(R.id.bottom_nav).setVisibility(View.GONE);
-
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        getActivity().findViewById(R.id.bottom_nav).setVisibility(View.VISIBLE);
-
-    }
 }

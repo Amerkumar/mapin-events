@@ -12,51 +12,12 @@
         android:layout_height="match_parent"
         tools:context=".ui.MapInFragment">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appBar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:elevation="16dp">
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="64dp"
-                app:title="Map" />
-
-            <ProgressBar
-                android:id="@+id/progress_horizontal"
-                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="-10dp"
-                android:layout_marginBottom="-10dp"
-                android:indeterminate="true"
-                android:visibility="gone" />
-
-            <View
-                android:id="@+id/anchor_dropdown"
-                android:layout_width="match_parent"
-                android:layout_height="0dp" />
-
-
-        </com.google.android.material.appbar.AppBarLayout>
-
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:id="@+id/map_fragment_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:context=".ui.MapInFragment" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/poi_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="?attr/actionBarSize"
-            android:layout_marginBottom="?attr/actionBarSize"
-            android:visibility="gone"
-            />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/symbol_layer_toggle_fab"

@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.auth.FirebaseUser;
+import com.indooratlas.android.sdk.IAExtraInfo;
 
 import java.util.List;
 
@@ -31,4 +32,9 @@ public class HomeViewModel extends ViewModel {
     public void sendFCMToken(FirebaseUser user, String token, boolean isTrue) {
         mMainRepository.setFCMRegistrationToken(user, token, isTrue);
     }
+
+    public void setUserTraceId(IAExtraInfo iaExtraInfo) {
+        mMainRepository.setTraceIdByUserCollection(iaExtraInfo);
+    }
+
 }

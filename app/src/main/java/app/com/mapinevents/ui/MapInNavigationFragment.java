@@ -264,6 +264,7 @@ public class MapInNavigationFragment extends Fragment {
         binding.indoorNavigationBottomSheet.metersTextView.setText("N/A");
         binding.indoorNavigationBottomSheet.timeTextView.setText("N/A");
         binding.indoorNavigationBottomSheet.navigationDetailTextView.setText("Navigating to " + poi.getName());
+//        Snackbar.make(binding.getRoot(), "Hall 5 & 6 is not mapped, navigation will be inacurate there")
     }
 
     @Override
@@ -334,6 +335,8 @@ public class MapInNavigationFragment extends Fragment {
         if (mCircle != null && mCircle.isVisible())
             mCircle.setVisible(false);
         mIALocationManager.unregisterOrientationListener(mOrientationListener);
+        clearRouteVisualization();
+        mIALocationManager.removeWayfindingUpdates();
     }
 
     private void showLocationCircle(LatLng center, double accuracyRadius) {
@@ -440,7 +443,7 @@ public class MapInNavigationFragment extends Fragment {
             binding.indoorNavigationBottomSheet.timeTextView.setText(String.format("%s sec", metersToTime(totalDistance)));
         }
 
-        binding.indoorNavigationBottomSheet.metersTextView.setText(String.format("%s | %d", metersToFootsteps(totalDistance), totalDistance));
+        binding.indoorNavigationBottomSheet.metersTextView.setText(String.format("%s footsteps | %d meters", metersToFootsteps(totalDistance), totalDistance));
     }
 
     // using average stride length
