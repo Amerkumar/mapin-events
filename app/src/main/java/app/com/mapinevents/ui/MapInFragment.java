@@ -341,100 +341,6 @@ public class MapInFragment extends Fragment
         mViewModel = ViewModelProviders.of(this).get(MapInViewModel.class);
         model = ViewModelProviders.of(getActivity()).get(SharedViewModel.class);
 
-//        model.getIaLocationMutableLiveData().observe(this, new Observer<IALocation>() {
-//            @Override
-//            public void onChanged(IALocation iaLocation) {
-//
-//                  showBlueDot(new LatLng(iaLocation.getLatitude(), iaLocation.getLongitude()), iaLocation.getAccuracy(),
-//                          iaLocation.getBearing());
-//            }
-//        });
-
-
-//        binding.poiRecyclerView.setAdapter(poiAdapter);
-//        binding.poiRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-//        mViewModel.getmAgendaObservable().observe(this, new Observer<List<POI>>() {
-//            @Override
-//            public void onChanged(List<POI> pois) {
-//                if (pois != null) {
-//                    binding.progressHorizontal.setVisibility(View.GONE);
-//                    poiAdapter.edit().removeAll().commit();
-//                    poiAdapter.edit()
-//                            .replaceAll(pois)
-//                            .commit();
-//                    mPoiModels = pois;
-//                } else {
-//                    binding.progressHorizontal.setVisibility(View.VISIBLE);
-//                }
-//            }
-//        });
-//        if (searchItem == null) {
-//            binding.toolbar.inflateMenu(R.menu.mapin_fragment_search_menu);
-//            searchItem = binding.toolbar.getMenu().findItem(R.id.m_search);
-//            searchView = (SearchView) searchItem.getActionView();
-//
-////        searchItem = binding.toolbar.getMenu().getItem(R.id.m_search);
-////
-//            MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
-//                @Override
-//                public boolean onMenuItemActionCollapse(MenuItem item) {
-//                    // Called when SearchView is collapsing
-////                if (mSearchItem.isActionViewExpanded()) {
-////                    animateSearchToolbar(1, false, false);
-////                }
-//                    if (searchItem.isActionViewExpanded()) {
-////                        animateSearchToolbar(1, false, false);
-//                        binding.mapFragmentContainer.setVisibility(View.VISIBLE);
-//                        Utils.showView(getActivity().findViewById(R.id.bottom_nav));
-//                        binding.symbolLayerToggleFab.setVisibility(View.VISIBLE);
-//                        binding.lightFab.setVisibility(View.VISIBLE);
-//                        binding.poiRecyclerView.setVisibility(View.GONE);
-//                    }
-//                    return true;
-//                }
-//
-//                @Override
-//                public boolean onMenuItemActionExpand(MenuItem item) {
-//                    // Called when SearchView is expanding
-////                animateSearchToolbar(1, true, true);
-////                    animateSearchToolbar(1, true, true);
-//                    binding.mapFragmentContainer.setVisibility(View.GONE);
-//                    Utils.hideView(getActivity().findViewById(R.id.bottom_nav));
-//
-//                    binding.symbolLayerToggleFab.setVisibility(View.GONE);
-//                    binding.lightFab.setVisibility(View.GONE);
-//                    binding.poiRecyclerView.setVisibility(View.VISIBLE);
-//
-//                    return true;
-//                }
-//            });
-//
-//
-//        }
-//
-//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String query) {
-//
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onQueryTextChange(String newText) {
-//                if (mPoiModels != null) {
-//                    final List<POI> filteredModelList = filter(mPoiModels, newText);
-//                    poiAdapter.edit()
-//                            .replaceAll(filteredModelList)
-//                            .commit();
-//                    Log.d("", String.valueOf(filteredModelList.size()));
-//
-//
-//                }
-//                return false;
-//            }
-//        });
-
-
         if (savedInstanceState == null) {
             transaction = getActivity().getSupportFragmentManager()
                     .beginTransaction();
@@ -502,6 +408,11 @@ public class MapInFragment extends Fragment
                             break;
 
                     }
+
+//                    boolean hallsVisible = sharedPref.getBoolean(getString(R.string.labels_halls), true);
+//                    boolean stallsVisible = sharedPref.getBoolean(getString(R.string.labels_stalls), false);
+//                    model.setHallsVisible(hallsVisible);
+//                    model.setStallsVisible(stallsVisible);
                 }
             }
         });
@@ -759,11 +670,6 @@ public class MapInFragment extends Fragment
     }
 
 
-//    @Override
-//    public void onStop() {
-//        super.onStop();
-//        unregisterSensorListener();
-//    }
 
     @Override
     public void onDestroy() {
@@ -808,170 +714,6 @@ public class MapInFragment extends Fragment
 
         Sensor getMagnetic() {
             return magnetic;
-        }
-    }
-
-
-//
-//    public void animateSearchToolbar(int numberOfMenuIcon, boolean containsOverflow, boolean show) {
-//
-//        Toolbar mToolbar = binding.toolbar;
-//        mToolbar.setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.white));
-////        mDrawerLayout.setStatusBarBackgroundColor(ContextCompat.getColor(getContext(), R.color.quantum_grey_600));
-//
-//        if (show) {
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                int width = mToolbar.getWidth() -
-//                        (containsOverflow ? getResources().getDimensionPixelSize(R.dimen.abc_action_button_min_width_overflow_material) : 0) -
-//                        ((getResources().getDimensionPixelSize(R.dimen.abc_action_button_min_width_material) * numberOfMenuIcon) / 2);
-//                Animator createCircularReveal = ViewAnimationUtils.createCircularReveal(mToolbar,
-//                        isRtl(getResources()) ? mToolbar.getWidth() - width : width, mToolbar.getHeight() / 2, 0.0f, (float) width);
-//                createCircularReveal.setDuration(250);
-//                createCircularReveal.start();
-//            } else {
-//                TranslateAnimation translateAnimation = new TranslateAnimation(0.0f, 0.0f, (float) (-mToolbar.getHeight()), 0.0f);
-//                translateAnimation.setDuration(220);
-//                mToolbar.clearAnimation();
-//                mToolbar.startAnimation(translateAnimation);
-//            }
-//        } else {
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                int width = mToolbar.getWidth() -
-//                        (containsOverflow ? getResources().getDimensionPixelSize(R.dimen.abc_action_button_min_width_overflow_material) : 0) -
-//                        ((getResources().getDimensionPixelSize(R.dimen.abc_action_button_min_width_material) * numberOfMenuIcon) / 2);
-//                Animator createCircularReveal = ViewAnimationUtils.createCircularReveal(mToolbar,
-//                        isRtl(getResources()) ? mToolbar.getWidth() - width : width, mToolbar.getHeight() / 2, (float) width, 0.0f);
-//                createCircularReveal.setDuration(250);
-//                createCircularReveal.addListener(new AnimatorListenerAdapter() {
-//                    @Override
-//                    public void onAnimationEnd(Animator animation) {
-//                        super.onAnimationEnd(animation);
-//                        mToolbar.setBackgroundColor(getThemeColor(getContext(), R.attr.colorPrimary));
-////                        mDrawerLayout.setStatusBarBackgroundColor(getThemeColor(MainActivity.this, R.attr.colorPrimaryDark));
-//                    }
-//                });
-//                createCircularReveal.start();
-//            } else {
-//                AlphaAnimation alphaAnimation = new AlphaAnimation(1.0f, 0.0f);
-//                Animation translateAnimation = new TranslateAnimation(0.0f, 0.0f, 0.0f, (float) (-mToolbar.getHeight()));
-//                AnimationSet animationSet = new AnimationSet(true);
-//                animationSet.addAnimation(alphaAnimation);
-//                animationSet.addAnimation(translateAnimation);
-//                animationSet.setDuration(220);
-//                animationSet.setAnimationListener(new Animation.AnimationListener() {
-//                    @Override
-//                    public void onAnimationStart(Animation animation) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onAnimationEnd(Animation animation) {
-//                        mToolbar.setBackgroundColor(getThemeColor(getContext(), R.attr.colorPrimary));
-//                    }
-//
-//                    @Override
-//                    public void onAnimationRepeat(Animation animation) {
-//
-//                    }
-//                });
-//                mToolbar.startAnimation(animationSet);
-//            }
-//        }
-//    }
-//
-//    private boolean isRtl(Resources resources) {
-//        return resources.getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
-//    }
-//
-//    private static int getThemeColor(Context context, int id) {
-//        Resources.Theme theme = context.getTheme();
-//        TypedArray a = theme.obtainStyledAttributes(new int[]{id});
-//        int result = a.getColor(0, 0);
-//        a.recycle();
-//        return result;
-//    }
-
-
-    private static List<POI> filter(List<POI> models, String query) {
-        final String lowerCaseQuery = query.toLowerCase();
-
-        final List<POI> filteredModelList = new ArrayList<>();
-        for (POI model : models) {
-            final String name = model.getName().toLowerCase();
-            final String rank = String.valueOf(model.getRank());
-            final String number = model.getNumber();
-            if (name.contains(lowerCaseQuery) || number.contains(lowerCaseQuery) || rank.contains(lowerCaseQuery)) {
-                filteredModelList.add(model);
-            }
-        }
-        return filteredModelList;
-    }
-
-
-    private PolygonOptions generatePerimeter(LatLng centerCoordinates, double radiusInKilometers, int numberOfSides) {
-        List<LatLng> positions = new ArrayList<>();
-        double distanceX = radiusInKilometers / (111.319 * Math.cos(centerCoordinates.getLatitude() * Math.PI / 180));
-        double distanceY = radiusInKilometers / 110.574;
-
-        double slice = (2 * Math.PI) / numberOfSides;
-
-        double theta;
-        double x;
-        double y;
-        LatLng position;
-        for (int i = 0; i < numberOfSides; ++i) {
-            theta = i * slice;
-            x = distanceX * Math.cos(theta);
-            y = distanceY * Math.sin(theta);
-
-            position = new LatLng(centerCoordinates.getLatitude() + y,
-                    centerCoordinates.getLongitude() + x);
-            positions.add(position);
-        }
-        return new PolygonOptions()
-                .addAll(positions)
-                .fillColor(Color.BLUE)
-                .alpha(0.4f);
-    }
-
-    private float metersToKilometer(float accuracyInMeters) {
-        return (float) (accuracyInMeters * 0.001);
-    }
-
-    private void showBlueDot(LatLng center, double accuracyRadius, double bearing) {
-
-        IconFactory iconFactory = IconFactory.getInstance(getActivity());
-        Icon icon = iconFactory.fromResource(R.drawable.circle_cropped);
-
-
-        if (mCirclePolygon == null) {
-            // location can received before map is initialized, ignoring those updates
-            if (mMap != null) {
-                mCirclePolygon = mMap.addPolygon(generatePerimeter(
-                        new LatLng(center.getLatitude(), center.getLongitude()),
-                        metersToKilometer((float) accuracyRadius),
-                        64));
-            }
-        } else {
-            // move existing buildingMarkers position to received location
-            mCirclePolygon.remove();
-            mCirclePolygon = mMap.addPolygon(generatePerimeter(
-                    new LatLng(center.getLatitude(), center.getLongitude()),
-                    metersToKilometer((float) accuracyRadius),
-                    64));
-
-        }
-        if (mLocationMarker == null) {
-            if (mMap != null) {
-
-                mLocationMarker = mMap.addMarker(new MarkerOptions()
-                        .position(center)
-                        .setIcon(icon)
-                );
-            }
-        }   else {
-            mLocationMarker.setPosition(center);
-                mLocationMarker.setIcon(icon);
         }
     }
 

@@ -136,8 +136,6 @@ public class MainActivity extends AppCompatActivity implements
         navController.addOnDestinationChangedListener(this);
 
         SingletonAppClass.getInstance().setFIRST_APP_OPEN(true);
-//        SingletonAppClass.getInstance().setIaExtraInfo(null);
-//        model.setIaExtraInfoMutableLiveData(null);
 
         model = ViewModelProviders.of(MainActivity.this).get(SharedViewModel.class);
 
@@ -146,7 +144,6 @@ public class MainActivity extends AppCompatActivity implements
             public void onChanged(IALocation iaLocation) {
                 Log.d("MainActivity", String.valueOf(iaLocation.getAccuracy()));
                 model.setIALocationMutableLiveData(iaLocation);
-//                model.setIaExtraInfoMutableLiveData(SingletonAppClass.getInstance().getIaLocationManager().getExtraInfo());
             }
         });
 
@@ -226,10 +223,10 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (SingletonAppClass.getInstance().getIaLocationManager() != null)
-            SingletonAppClass.getInstance().getIaLocationManager().destroy();
-
+//        if (SingletonAppClass.getInstance().getIaLocationManager() != null)
+//            SingletonAppClass.getInstance().getIaLocationManager().destroy();
     }
+
 
     public void showProgressBar() {
         progressBar.setVisibility(View.VISIBLE);
