@@ -53,16 +53,7 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBscJf0wmeRDOls-IY95ODAgOKhWQZT4dI" />
-
-        <meta-data
-            android:name="com.indooratlas.android.sdk.API_KEY"
-            android:value="07c4a190-270a-4407-ab37-e9244f51b93b"/>
-        <meta-data
-            android:name="com.indooratlas.android.sdk.API_SECRET"
-            android:value="jUnv3Z6ikJcrscvUUWA2YnZOGIiV10CDq8oPnCdBEeZlD4JBF0n4u7nRp1dyzie/u+DCVfEM/ZZoZXTBrCiS7HHq/6RYv+/lBCbNXf4snVkg9t1tzFug+oq+j2AJNw=="/>
+     
     </application>
 
 
