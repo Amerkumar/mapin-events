@@ -14,6 +14,7 @@ This application uses modern architecture components architecture as suggested b
 The application requires tweakings before running.
 
 ##### Screenshots
+<center>
 <img src="./screenshots/2d-indoor-map-screen.webp" alt="Home Page" width="200" />
 
 
@@ -29,11 +30,10 @@ The application requires tweakings before running.
 
 
 <img src="./screenshots/poi-select-screen.webp" alt="Home Page" width="200" />
+</center>
 
-
-##### Extras
-<img src="./deprecated.png" alt="drawing" width="30" />The application is deprecated. 
-
+##### Extras 
+<img src="./deprecated.png" alt="drawing" width="30" />The application is not actively maintained. 
 
 
 
